@@ -54,5 +54,5 @@ void setup()
 
 void loop()
 {
-    trail();
+    trail(); // 循跡
 }
