@@ -17,6 +17,8 @@ volatile int IR_L = 0;
 volatile int IR_M = 0;
 volatile int IR_R = 0;
 volatile int IR_RR = 0;
+volatile long pulseLeft = 0;  // 左輪的脈衝數
+volatile long pulseRight = 0; // 右輪的脈衝數
 
 // A1~A5為紅外線數值
 const int IR[5] = {A1, A2, A3, A4, A5};

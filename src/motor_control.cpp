@@ -3,8 +3,6 @@
 
 // volatile功能，告訴編譯器，這個變數可能會在程式的不同部分被更改
 // 所以編譯器要保持從記憶體中讀取變數的最新值，而不是從暫存器中讀取
-volatile long pulseLeft = 0;  // 左輪的脈衝數
-volatile long pulseRight = 0; // 右輪的脈衝數
 
 // 更新IR感測器, 白色為0, 黑色為1
 void IR_update()
@@ -43,8 +41,7 @@ void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool
 {
     const int minimumSpeed = -255; // 最小速度
     const int maximumSpeed = 255;  // 最大速度
-    float Kp = 10;                 // 比例增益，需要根據實際情況調整
-    float Kd = 5;                  // 微分增益，需要根據實際情況調整
+    float Kp = 2;
 
     int speedL = initialSpeedL;
     int speedR = initialSpeedR;
@@ -52,18 +49,15 @@ void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool
     pulseLeft = 0;
     pulseRight = 0;
 
-    long lastPulseDifference = 0;
-
     while (pulseLeft < targetPulses && pulseRight < targetPulses)
     {
         if (autoSync)
         {
             long pulseDifference = pulseLeft - pulseRight;
-            long pulseDifferenceChange = pulseDifference - lastPulseDifference;
 
-            int adjustment = Kp * pulseDifference + Kd * pulseDifferenceChange;
+            int adjustment = Kp * pulseDifference;
 
-            // 根據速度的正負號進行調整
+            // 因為pulse永遠是正的但是馬達可能是負的(反轉)，所以要判斷正負來改變速度修正公式
             if (initialSpeedL >= 0)
                 speedL = initialSpeedL - adjustment;
             else
@@ -76,8 +70,6 @@ void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool
 
             speedL = constrain(speedL, minimumSpeed, maximumSpeed);
             speedR = constrain(speedR, minimumSpeed, maximumSpeed);
-
-            lastPulseDifference = pulseDifference;
         }
         motor(speedL, speedR);
     }
@@ -100,7 +92,7 @@ void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool
 // 讀取IR感測器，白色為0，黑色為1
 
 // PID循跡
-void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Ki, float Kd, int baseSpeed)
+void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed)
 {
     const int minimumSpeed = -255; // 最小速度
     const int maximumSpeed = 255;  // 最大速度
