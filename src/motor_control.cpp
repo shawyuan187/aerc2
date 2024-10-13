@@ -193,48 +193,55 @@ void trail()
 // 前進
 void forward()
 {
+    IR_update();
     motor(255, 255);
 }
 
 // 小左
 void small_turn_left()
 {
+    IR_update();
     motor(220, 255);
 }
 
 // 小右
 void small_turn_right()
 {
+    IR_update();
     motor(255, 220);
 }
 
 // 中左
 void mid_turn_left()
 {
+    IR_update();
     motor(0, 255);
 }
 
 // 中右
 void mid_turn_right()
 {
+    IR_update();
     motor(255, 0);
 }
 
 // 大左
 void big_turn_left()
 {
+    IR_update();
     motor(-120, 100);
 }
 
 // 大右
 void big_turn_right()
 {
-
+    IR_update();
     motor(100, -120);
 }
 
 // 停止
 void stop()
 {
+    IR_update();
     motor(0, 0);
 }

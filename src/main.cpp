@@ -55,26 +55,6 @@ void loop()
     }
 
     IR_update();
-    while (!(IR_RR))
-    {
-        trail();
-    }
-    IR_update();
-    while (!(IR_M))
-    {
-        IR_update();
-        big_turn_right();
-    }
-    while (!(IR_RR))
-    {
-        IR_update();
-        motor(55, 255);
-    }
-    while (!(IR_RR && IR_R))
-    {
-        IR_update();
-        motor(255, 100);
-    }
 
     stop();
 }
