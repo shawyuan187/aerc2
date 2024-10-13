@@ -167,11 +167,33 @@ void trail()
     {
         if (IR_L)
         {
-            mid_turn_left();
+            if (IR_LL)
+            {
+                big_turn_left();
+            }
+            else
+            {
+                mid_turn_left();
+            }
+        }
+        else if (IR_LL)
+        {
+            big_turn_left();
         }
         else if (IR_R)
         {
-            mid_turn_right();
+            if (IR_RR)
+            {
+                big_turn_right();
+            }
+            else
+            {
+                mid_turn_right();
+            }
+        }
+        else if (IR_RR)
+        {
+            big_turn_right();
         }
     }
 }
@@ -209,13 +231,13 @@ void mid_turn_right()
 // 大左
 void big_turn_left()
 {
-    motor(-255, 255);
+    motor(-150, 150);
 }
 
 // 大右
 void big_turn_right()
 {
-    motor(255, -255);
+    motor(150, -150);
 }
 
 // 停止
