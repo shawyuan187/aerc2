@@ -55,6 +55,10 @@ void loop()
     }
 
     IR_update();
+    while (!(IR_RR && IR_R))
+    {
+        trail();
+    }
 
     stop();
 }

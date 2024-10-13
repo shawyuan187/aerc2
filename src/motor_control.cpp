@@ -215,28 +215,28 @@ void small_turn_right()
 void mid_turn_left()
 {
     IR_update();
-    motor(0, 255);
+    motor(100, 255);
 }
 
 // 中右
 void mid_turn_right()
 {
     IR_update();
-    motor(255, 0);
+    motor(255, 100);
 }
 
 // 大左
 void big_turn_left()
 {
     IR_update();
-    motor(-120, 100);
+    motor(30, 245);
 }
 
 // 大右
 void big_turn_right()
 {
     IR_update();
-    motor(100, -120);
+    motor(245, 30);
 }
 
 // 停止
