@@ -245,3 +245,13 @@ void stop()
     IR_update();
     motor(0, 0);
 }
+
+void trail_for_ms(unsigned long ms)
+{
+    unsigned long start_time = millis();
+    while (millis() - start_time < ms)
+    {
+        trail();
+    }
+    stop();
+}
