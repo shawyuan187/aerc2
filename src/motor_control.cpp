@@ -158,14 +158,14 @@ void trail()
         {
             small_turn_right();
         }
-        else if (IR_L == 0 && IR_R == 0)
+        else
         {
             forward();
         }
     }
     else
     {
-        if (IR_L)
+        if (IR_L || IR_LL)
         {
             if (IR_LL)
             {
@@ -176,11 +176,7 @@ void trail()
                 mid_turn_left();
             }
         }
-        else if (IR_LL)
-        {
-            big_turn_left();
-        }
-        else if (IR_R)
+        else if (IR_R || IR_RR)
         {
             if (IR_RR)
             {
@@ -190,10 +186,6 @@ void trail()
             {
                 mid_turn_right();
             }
-        }
-        else if (IR_RR)
-        {
-            big_turn_right();
         }
     }
 }
