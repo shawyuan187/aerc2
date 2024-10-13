@@ -43,18 +43,38 @@ void setup()
     // attachInterrupt(digitalPinToInterrupt(encoderLeftPinA), updateLeftPulse, RISING);
     // attachInterrupt(digitalPinToInterrupt(encoderRightPinA), updateRightPulse, RISING);
 
-    Serial.begin(9600);
+    // Serial.begin(9600);
+}
+
+void loop()
+{
     buttonState = digitalRead(buttonPin);
     while (buttonState)
     {
         buttonState = digitalRead(buttonPin);
     }
 
-    // PID_trail(true, []()
-    //           { return (IR_LL == 1 || IR_RR == 1); }, 100, 0, 0, 250);
-}
+    IR_update();
+    while (!(IR_RR))
+    {
+        trail();
+    }
+    IR_update();
+    while (!(IR_M))
+    {
+        IR_update();
+        big_turn_right();
+    }
+    while (!(IR_RR))
+    {
+        IR_update();
+        motor(55, 255);
+    }
+    while (!(IR_RR && IR_R))
+    {
+        IR_update();
+        motor(255, 100);
+    }
 
-void loop()
-{
-    trail(); // 循跡
+    stop();
 }
