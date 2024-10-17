@@ -61,65 +61,31 @@ void loop()
     }
 
     IR_update();
-    // motor(-255, -255);
-    // delay(50);
-
     while (!(IR_R))
     {
         IR_update();
         motor(50, -100);
     }
-    motor(80, 255);
-    delay(550);
+    delay(10);
+    IR_update();
     while (!(IR_RR))
     {
-        IR_update();
+        mid_turn_left();
     }
-    motor(100, -120);
+
+    motor(255, -100);
     delay(50);
-    // while (!(IR_M))
-    // {
-    //     IR_update();
-    //     motor(100, -120);
-    // }
-    motor(255, 80);
-    delay(550);
-    // while (!(IR_L))
-    // {
-    //     IR_update();
-    //     motor(255, 100);
-    // }
-    IR_update();
-    trail_for_ms(400);
-    while (!(IR_M))
+    motor(255, 50);
+    delay(300);
+    while (!(IR_R))
     {
         IR_update();
-        motor(100, -100);
     }
 
-    motor(-255, -255);
-    delay(50);
-    // IR_update();
-    // while (!(IR_RR))
-    // {
-    //     trail();
-    // }
-
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     IR_update();
-    //     while (!(IR_R))
-    //     {
-    //         IR_update();
-    //         motor(50, -100);
-    //     }
-
-    //     IR_update();
-    //     while (!(IR_RR))
-    //     {
-    //         trail();
-    //     }
-    // }
+    while (!(IR_RR))
+    {
+        trail();
+    }
 
     stop();
 }
