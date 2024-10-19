@@ -189,7 +189,36 @@ void trail()
         }
     }
 }
-
+void trail_X()
+{
+    IR_update();
+    if (IR_M)
+    {
+        if (IR_L)
+        {
+            mid_turn_left();
+        }
+        else if (IR_R)
+        {
+            mid_turn_right();
+        }
+        else
+        {
+            forward();
+        }
+    }
+    else
+    {
+        if (IR_L)
+        {
+            big_turn_left();
+        }
+        else if (IR_R)
+        {
+            big_turn_right();
+        }
+    }
+}
 // 前進
 void forward()
 {
@@ -243,15 +272,17 @@ void big_turn_right()
 void stop()
 {
     IR_update();
+    motor(-255, -255);
+    delay(10);
     motor(0, 0);
 }
 
-void trail_for_ms(unsigned long ms)
+void cmd_for_ms(void (*command)(), unsigned long ms)
 {
     unsigned long start_time = millis();
     while (millis() - start_time < ms)
     {
-        trail();
+        command();
     }
     stop();
 }
