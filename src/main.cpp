@@ -48,44 +48,113 @@ void setup()
 
 void loop()
 {
+    // 按按鈕
     buttonState = digitalRead(buttonPin);
     while (buttonState)
     {
         buttonState = digitalRead(buttonPin);
     }
+    delay(1000);
 
-    IR_update();
+    // // 1 往前衝
+    // IR_update();
+    // while (!(IR_RR))
+    // {
+    //     trail();
+    // }
+    // // 1 超出前面
+    // while (IR_RR)
+    // {
+    //     forward();
+    // }
+
+    // motor(-255, -255);
+    // delay(50);
+    // // 2 旋轉
+    // IR_update();
+    // while (!(IR_R))
+    // {
+    //     IR_update();
+    //     motor(50, -100);
+    // }
+    // delay(10);
+    // IR_update();
+    // // 2 往左轉衝
+    // while (!(IR_RR))
+    // {
+    //     mid_turn_left();
+    // }
+    // // 2 超出前面
+    // while (IR_RR)
+    // {
+    //     IR_update();
+    // }
+    // // 3 往右旋轉
+    // motor(255, -100);
+    // delay(50);
+    // motor(255, 70);
+    // delay(300);
+    // while (!(IR_R))
+    // {
+    //     IR_update();
+    // }
+    // 4 往前衝
+
     while (!(IR_RR))
     {
         trail();
     }
 
-    IR_update();
-    while (!(IR_R))
+    // 4 超出前面
+    while (IR_RR)
+    {
+        stop();
+        IR_update();
+    }
+
+    // 5 向右原地旋轉
+    while (!(IR_RR))
     {
         IR_update();
-        motor(50, -100);
+        motor(80, -90);
+    }
+    while (IR_RR)
+    {
+        IR_update();
+    }
+
+    // 5 往前衝
+    while (!(IR_RR))
+    {
+        slow_trail();
+    }
+    while (IR_RR)
+    {
+        slow_trail();
     }
     delay(10);
-    IR_update();
     while (!(IR_RR))
     {
-        mid_turn_left();
+        IR_update();
+        motor(128, -20);
     }
-
-    motor(255, -100);
-    delay(50);
-    motor(255, 50);
-    delay(300);
-    while (!(IR_R))
+    while (IR_RR)
     {
         IR_update();
     }
 
-    while (!(IR_RR))
+    motor(128, 128);
+    delay(100);
+    while (!(IR_LL))
     {
-        trail();
+        IR_update();
+        motor(128, 128);
     }
+    // while (!(IR_RR == 0 && IR_R == 0 && IR_M == 0 && IR_L == 0 && IR_LL == 0))
+    // {
+    //     IR_update();
+    //     motor(128, 128);
+    // }
 
     stop();
 }

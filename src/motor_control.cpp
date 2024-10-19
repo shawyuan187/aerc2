@@ -286,3 +286,48 @@ void cmd_for_ms(void (*command)(), unsigned long ms)
     }
     stop();
 }
+
+void slow_trail()
+{
+    IR_update();
+    if (IR_M)
+    {
+        if (IR_L)
+        {
+            motor(110, 128);
+        }
+        else if (IR_R)
+        {
+            motor(128, 110);
+        }
+        else
+        {
+            motor(128, 128);
+        }
+    }
+    else
+    {
+        if (IR_L || IR_LL)
+        {
+            if (IR_LL)
+            {
+                motor(15, 123);
+            }
+            else
+            {
+                motor(50, 128);
+            }
+        }
+        else if (IR_R || IR_RR)
+        {
+            if (IR_RR)
+            {
+                motor(123, 15);
+            }
+            else
+            {
+                motor(128, 50);
+            }
+        }
+    }
+}

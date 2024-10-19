@@ -57,4 +57,6 @@ void stop();
 // 執行某個指令一段時間ms
 void cmd_for_ms(void (*command)(), unsigned long ms);
 void trail_X();
+// 緩慢循跡
+void slow_trail();
 #endif // MOTOR_CONTROL_H
