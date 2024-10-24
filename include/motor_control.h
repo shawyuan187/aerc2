@@ -6,13 +6,11 @@
 // 左右輪的馬達和編碼器引腳
 // extern功能，將變數定義在其他檔案中
 // const功能，將變數設定為唯讀
-extern const int encoderLeftPinA;  // 左輪編碼器 A 相
-extern const int encoderRightPinA; // 右輪編碼器 A 相
-extern const int motorLeftPWM;     // 左輪馬達 PWM 控制
-extern const int motorRightPWM;    // 右輪馬達 PWM 控制
-extern const int motorLeftDir;     // 左輪馬達方向
-extern const int motorRightDir;    // 右輪馬達方向
-extern const int IR[5];            // A1~A5為紅外線數值
+extern const int motorLeftPWM;  // 左輪馬達 PWM 控制
+extern const int motorRightPWM; // 右輪馬達 PWM 控制
+extern const int motorLeftDir;  // 左輪馬達方向
+extern const int motorRightDir; // 右輪馬達方向
+extern const int IR[5];         // A1~A5為紅外線數值
 
 extern volatile int IR_LL; // 最左的紅外線感測器
 extern volatile int IR_L;  // 中左的紅外線感測器
@@ -35,7 +33,7 @@ void motor(int speedL, int speedR);
 // 控制左右輪的馬達，並移動到指定的目標脈衝數
 void controlMotors(int speedL, int speedR, long targetPulses, bool autoSync);
 // PID循跡
-void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250);
+void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250, unsigned long ms = 0);
 // 循跡
 void trail();
 // 小左
@@ -56,7 +54,12 @@ void forward();
 void stop();
 // 執行某個指令一段時間ms
 void cmd_for_ms(void (*command)(), unsigned long ms);
+// 緩慢循跡
 void trail_X();
 // 緩慢循跡
 void slow_trail();
+// OLED 初始化
+void OLED_init();
+// OLED 顯示
+void OLED_display();
 #endif // MOTOR_CONTROL_H

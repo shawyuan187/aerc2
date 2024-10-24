@@ -2,15 +2,12 @@
 #include <SoftwareSerial.h>
 #include "motor_control.h"
 
-// 左右輪的馬達和編碼器引腳
-const int encoderLeftPinA = 2;  // 左輪編碼器 A 相
-const int encoderRightPinA = 3; // 右輪編碼器 A 相
-const int motorLeftPWM = 5;     // 左輪馬達 PWM 控制, 轉速0~255
-const int motorRightPWM = 6;    // 右輪馬達 PWM 控制, 轉速0~255
-const int motorLeftDir = 4;     // 左輪馬達方向
-const int motorRightDir = 7;    // 右輪馬達方向
-const int buttonPin = 8;        // 按鈕連接到 Pin 2
-int buttonState = 0;            // 變量來儲存按鈕狀態
+const int motorLeftPWM = 5;  // 左輪馬達 PWM 控制, 轉速0~255
+const int motorRightPWM = 6; // 右輪馬達 PWM 控制, 轉速0~255
+const int motorLeftDir = 4;  // 左輪馬達方向
+const int motorRightDir = 7; // 右輪馬達方向
+const int buttonPin = 8;     // 按鈕連接到 Pin 2
+int buttonState = 0;         // 變量來儲存按鈕狀態
 
 volatile int IR_LL = 0;
 volatile int IR_L = 0;
@@ -27,8 +24,6 @@ void setup()
 {
     // 設置馬達和編碼器的引腳
     pinMode(buttonPin, INPUT_PULLUP);
-    pinMode(encoderLeftPinA, INPUT);
-    pinMode(encoderRightPinA, INPUT);
     pinMode(motorLeftPWM, OUTPUT);
     pinMode(motorRightPWM, OUTPUT);
     pinMode(motorLeftDir, OUTPUT);
@@ -39,10 +34,7 @@ void setup()
         pinMode(IR[i], INPUT); // 數值為0~1023，白色為0，黑色為1023
     }
 
-    // 設置編碼器中斷
-    // attachInterrupt(digitalPinToInterrupt(encoderLeftPinA), updateLeftPulse, RISING);
-    // attachInterrupt(digitalPinToInterrupt(encoderRightPinA), updateRightPulse, RISING);
-
+    OLED_init(); // OLED 初始化
     // Serial.begin(9600);
 }
 
@@ -53,108 +45,161 @@ void loop()
     while (buttonState)
     {
         buttonState = digitalRead(buttonPin);
+        OLED_display();
     }
     delay(1000);
 
-    // // 1 往前衝
-    // IR_update();
-    // while (!(IR_RR))
-    // {
-    //     trail();
-    // }
-    // // 1 超出前面
-    // while (IR_RR)
-    // {
-    //     forward();
-    // }
+    // PID_trail(true, []()
+    //           { return (IR_RR == 1); }, 90, 80, 0, 250, 0);
 
-    // motor(-255, -255);
-    // delay(50);
-    // // 2 旋轉
+    // while (IR_RR)
+    //     IR_update();
+
     // IR_update();
-    // while (!(IR_R))
+    // while (!(IR_M))
     // {
     //     IR_update();
     //     motor(50, -100);
     // }
-    // delay(10);
-    // IR_update();
-    // // 2 往左轉衝
-    // while (!(IR_RR))
-    // {
-    //     mid_turn_left();
-    // }
-    // // 2 超出前面
+
+    // PID_trail(true, []()
+    //           { return (IR_RR == 1); }, 90, 80, 0, 250, 0); // 90, 80, 0, 250, 0
+
     // while (IR_RR)
+    //     IR_update();
+
+    // while (!(IR_M))
     // {
     //     IR_update();
+    //     motor(50, -100);
     // }
-    // // 3 往右旋轉
-    // motor(255, -100);
-    // delay(50);
-    // motor(255, 70);
-    // delay(300);
-    // while (!(IR_R))
-    // {
-    //     IR_update();
-    // }
-    // 4 往前衝
 
-    while (!(IR_RR))
-    {
-        trail();
-    }
+    // PID_trail(false, []()
+    //           { return (false); }, 100, 0, 0, 100, 1100);
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 100, 0, 0, 100, 0);
 
-    // 4 超出前面
-    while (IR_RR)
+    // 4停止L角落
+
+    IR_update();
+    while (!(IR_R == 0 && IR_RR == 0))
     {
-        stop();
+        motor(100, 100);
         IR_update();
     }
 
-    // 5 向右原地旋轉
-    while (!(IR_RR))
+    IR_update();
+    while (!(IR_R))
     {
         IR_update();
-        motor(80, -90);
+        motor(100, -100);
     }
-    while (IR_RR)
+
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_R == 0 && IR_RR == 0))
     {
+        motor(100, 100);
         IR_update();
     }
 
-    // 5 往前衝
-    while (!(IR_RR))
-    {
-        slow_trail();
-    }
-    while (IR_RR)
-    {
-        slow_trail();
-    }
-    delay(10);
-    while (!(IR_RR))
+    IR_update();
+    while (!(IR_R))
     {
         IR_update();
-        motor(128, -20);
+        motor(100, -100);
     }
-    while (IR_RR)
+
+    motor(100, 100);
+    delay(100); // 可能要調整
+    // 6停止十字
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_L == 0 && IR_LL == 0))
     {
+        motor(100, 100);
         IR_update();
     }
 
-    motor(128, 128);
-    delay(100);
-    while (!(IR_LL))
+    IR_update();
+    while (!(IR_L))
     {
         IR_update();
-        motor(128, 128);
+        motor(-100, 100);
     }
-    // while (!(IR_RR == 0 && IR_R == 0 && IR_M == 0 && IR_L == 0 && IR_LL == 0))
-    // {
-    //     IR_update();
-    //     motor(128, 128);
-    // }
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_L == 0 && IR_LL == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_R == 0 && IR_RR == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_R))
+    {
+        IR_update();
+        motor(100, -100);
+    }
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_L == 0 && IR_LL == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+    PID_trail(false, []()
+              { return (false); }, 100, 0, 0, 100, 1500);
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0);
+
+    while (!(IR_L == 0 && IR_LL == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+    // 11停止銳角
 
     stop();
 }
