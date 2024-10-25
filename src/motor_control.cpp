@@ -9,18 +9,17 @@ SoftwareWire myWire(2, 3); // SDA 在 D2，SCL 在 D3
 // 使用 U8g2 庫並使用 SoftwareWire 作為 I2C 通訊
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/3, /* data=*/2, /* reset=*/U8X8_PIN_NONE);
 
-// volatile功能，告訴編譯器，這個變數可能會在程式的不同部分被更改
-// 所以編譯器要保持從記憶體中讀取變數的最新值，而不是從暫存器中讀取
+#define IR_OFFSET 450
 
 // 更新IR感測器, 白色為0, 黑色為1
 void IR_update()
 {
     // 讀取IR感測器，白色為0，黑色為1
-    IR_LL = analogRead(IR[0]) > 450 ? 1 : 0;
-    IR_L = analogRead(IR[1]) > 450 ? 1 : 0;
-    IR_M = analogRead(IR[2]) > 450 ? 1 : 0;
-    IR_R = analogRead(IR[3]) > 450 ? 1 : 0;
-    IR_RR = analogRead(IR[4]) > 450 ? 1 : 0;
+    IR_LL = analogRead(IR[0]) > IR_OFFSET ? 1 : 0;
+    IR_L = analogRead(IR[1]) > IR_OFFSET ? 1 : 0;
+    IR_M = analogRead(IR[2]) > IR_OFFSET ? 1 : 0;
+    IR_R = analogRead(IR[3]) > IR_OFFSET ? 1 : 0;
+    IR_RR = analogRead(IR[4]) > IR_OFFSET ? 1 : 0;
 }
 
 // 更新左輪的脈衝數
