@@ -48,6 +48,7 @@ void loop()
         OLED_display(); // OLED 顯示IR真實數值
     }
     delay(1000);
+    IR_update();
 
     PID_trail(true, []()
               { return (IR_RR == 1); }, 90, 80, 0, 250, 0); // 1的循跡
@@ -201,7 +202,7 @@ void loop()
     }
 
     PID_trail(false, []()
-              { return (false); }, 60, 60, 0, 100, 500);
+              { return (false); }, 60, 60, 0, 100, 550);
 
     PID_trail(false, []()
               { return (IR_LL == 1); }, 60, 60, 0, 100, 0); // 11的循跡
@@ -224,27 +225,58 @@ void loop()
     }
 
     PID_trail(false, []()
-              { return (false); }, 60, 60, 0, 100, 1000); // 11的循跡調時間, 經過小左轉
+              { return (false); }, 50, 70, 0, 100, 1000); // 11的循跡調時間, 經過小左轉
     PID_trail(false, []()
-              { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 60, 60, 0, 100, 0); // 12的循跡,讓車子進良維持直行
+              { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 50, 60, 0, 100, 0); // 12的循跡,讓車子進良維持直行
+
+    // PID_trail(true, []()
+    //           { return (IR_LL == 1 && IR_L == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0); }, 30, 30, 0, 100, 0);
+
+    PID_trail(true, []()
+              { return (false); }, 30, 0, 0, 200, 1400);
+
+    PID_trail(false, []()
+              { return (IR_LL == 1 && IR_L == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0); }, 30, 30, 0, 100, 0);
 
     IR_update();
-    while (!(IR_L == 0 && IR_LL == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0)) // 直行後接著高速循跡到看到一片空白
+    while (!(IR_L == 0 && IR_LL == 0))
     {
-        trail();
+        motor(100, 100);
+        IR_update();
     }
 
     IR_update();
-    while (!(IR_LL || IR_L || IR_M || IR_R || IR_RR)) // 往前衝直到看到黑線
+    while (!(IR_L))
     {
-        forward();
+        IR_update();
+        motor(-100, 100);
     }
+    // IR_update();
+    // while (!(IR_L == 0 && IR_LL == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0)) // 直行後接著高速循跡到看到一片空白
+    // {
+    //     // trail();
+    // }
+
+    // IR_update();
+    // while (!(IR_LL || IR_L || IR_M || IR_R || IR_RR)) // 往前衝直到看到黑線
+    // {
+    //     forward();
+    // }
+
+    // IR_update();
+    // while (!(IR_LL)) // 繼續高速循跡到左直角L
+    // {
+    //     trail();
+    // }
 
     IR_update();
-    while (!(IR_LL)) // 繼續高速循跡到左直角L
+    while (!(IR_R))
     {
-        trail();
+        IR_update();
+        motor(-100, 100);
     }
+    PID_trail(true, []()
+              { return (IR_RR == 1 && IR_R == 1 && IR_M == 1 && IR_L == 1 && IR_LL == 1); }, 70, 50, 0, 190, 0);
 
     stop();
 }
