@@ -18,6 +18,11 @@
 - `IR_RR`：最右的紅外線感測器值
 - `pulseLeft`：左輪的脈衝數
 - `pulseRight`：右輪的脈衝數
+- `trigPin`：超音波 trig 引腳
+- `echoPin`：超音波 echo 引腳
+- `distance`：超音波量測距離
+- `echoStart`：超音波回波開始時間
+- `echoEnd`：超音波回波結束時間
 
 函數宣告：
 
@@ -26,7 +31,7 @@
 - `void updateRightPulse()`：更新右輪的脈衝數
 - `void motor(int speedL, int speedR)`：控制左右輪的馬達
 - `void controlMotors(int speedL, int speedR, long targetPulses, bool autoSync)`：控制馬達並移動到指定脈衝數
-- `void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250, unsigned long ms = 0)`：使用 PID 演算法進行循跡
+- `void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250, unsigned long ms = 0, bool useUltraSonic = false)`：使用 PID 演算法進行循跡
 - `void trail()`：循跡控制
 - `void small_turn_left()`：小幅左轉
 - `void small_turn_right()`：小幅右轉
@@ -41,6 +46,8 @@
 - `void slow_trail()`：緩慢循跡
 - `void OLED_init()`：初始化 OLED 顯示器
 - `void OLED_display()`：OLED 顯示內容
+- `void ultrasonic()`：超音波量測距離
+- `void echoISR()`：超音波回波中斷
 
 ### [src/main.cpp](src/main.cpp)
 
@@ -50,6 +57,7 @@
 - 等待按鈕觸發後開始執行循跡任務
 - 根據紅外線感測器的數據，控制機器人的運動路徑
 - 執行多個階段的循跡與轉向控制，實現指定的路徑導航
+- 初始化超音波感測器並處理回波中斷
 
 ### [src/motor_control.cpp](src/motor_control.cpp)
 
@@ -60,6 +68,7 @@
 - 利用 PID 演算法進行精確的循跡控制
 - 各種轉向動作的實現，如小幅轉向、中等轉向和大幅轉向
 - OLED 顯示器的初始化與顯示功能
+- 超音波感測器的量測與回波處理
 
 ## 開發環境
 
@@ -74,6 +83,7 @@
 - 紅外線感測器（共 5 個）
 - OLED 顯示器
 - 按鈕與相關配件
+- 超音波感測器
 
 ## 安裝與使用
 
