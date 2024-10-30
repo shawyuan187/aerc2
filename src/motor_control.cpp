@@ -4,10 +4,10 @@
 #include "motor_control.h"
 
 // 建立 SoftwareWire 物件
-SoftwareWire myWire(2, 3); // SDA 在 D2，SCL 在 D3
+SoftwareWire myWire(9, 10); // SDA 在 D2，SCL 在 D3
 
 // 使用 U8g2 庫並使用 SoftwareWire 作為 I2C 通訊
-U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/3, /* data=*/2, /* reset=*/U8X8_PIN_NONE);
+U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/9, /* data=*/10, /* reset=*/U8X8_PIN_NONE);
 
 #define IR_OFFSET 450
 
@@ -99,7 +99,7 @@ void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool
 // 讀取IR感測器，白色為0，黑色為1
 
 // PID循跡
-void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms)
+void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms, bool useUltraSonic)
 {
     const int minimumSpeed = -255; // 最小速度
     const int maximumSpeed = 255;  // 最大速度
@@ -116,6 +116,11 @@ void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, floa
         }
 
         IR_update();
+
+        if (useUltraSonic)
+        {
+            ultrasonic();
+        }
         // 計算偏差值
         int error = 0;
 
@@ -446,4 +451,32 @@ void OLED_display()
     // 顯示更新的內容到 OLED 上
     u8g2.sendBuffer();
     delay(100);
+}
+
+void ultrasonic()
+{
+    // 發送超音波觸發信號
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+}
+
+void echoISR()
+{
+    if (digitalRead(echoPin) == HIGH)
+    {
+        // 記錄回波信號開始時間
+        echoStart = micros();
+    }
+    else
+    {
+        // 記錄回波信號結束時間
+        echoEnd = micros();
+        // 計算持續時間
+        unsigned long duration = echoEnd - echoStart;
+        // 計算距離
+        distance = (duration / 2.0) / 29.1;
+    }
 }
