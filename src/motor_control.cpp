@@ -1,13 +1,9 @@
 #include <Arduino.h>
-#include <SoftwareWire.h>
 #include <U8g2lib.h>
 #include "motor_control.h"
 
-// 建立 SoftwareWire 物件
-SoftwareWire myWire(9, 10); // SDA 在 D2，SCL 在 D3
-
 // 使用 U8g2 庫並使用 SoftwareWire 作為 I2C 通訊
-U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/9, /* data=*/10, /* reset=*/U8X8_PIN_NONE);
+U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/10, /* data=*/9, /* reset=*/U8X8_PIN_NONE);
 
 #define IR_OFFSET 450
 
@@ -416,39 +412,38 @@ void slow_trail()
 
 void OLED_init()
 {
-    // 初始化 OLED 顯示器
     u8g2.begin();
+    u8g2.setContrast(255); // 增加此行以設定最大亮度
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_ncenB08_tr);
+    u8g2.drawStr(0, 10, "OLED Init OK!"); // 增加初始化確認訊息
+    u8g2.sendBuffer();
+    delay(1000);
 }
 
 void OLED_display()
 {
-    // 清除顯示器，準備更新顯示的內容
     u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf); // 改用較小的字型以確保顯示空間足夠
 
-    // 設定顯示文字的位置
-    u8g2.setFont(u8g2_font_ncenB08_tr);
-    // 顯示各個變數的數值
-    u8g2.setCursor(0, 10);
-    u8g2.print("IR_LL: ");
-    u8g2.print(analogRead(IR[0]));
+    char buffer[32]; // 用於格式化字串
 
-    u8g2.setCursor(0, 20);
-    u8g2.print("IR_L: ");
-    u8g2.print(analogRead(IR[1]));
+    // 使用 sprintf 格式化數值，避免直接使用 print
+    sprintf(buffer, "IR_LL:%4d", analogRead(IR[0]));
+    u8g2.drawStr(0, 10, buffer);
 
-    u8g2.setCursor(0, 30);
-    u8g2.print("IR_M: ");
-    u8g2.print(analogRead(IR[2]));
+    sprintf(buffer, "IR_L:%4d", analogRead(IR[1]));
+    u8g2.drawStr(0, 20, buffer);
 
-    u8g2.setCursor(0, 40);
-    u8g2.print("IR_R: ");
-    u8g2.print(analogRead(IR[3]));
+    sprintf(buffer, "IR_M:%4d", analogRead(IR[2]));
+    u8g2.drawStr(0, 30, buffer);
 
-    u8g2.setCursor(0, 50);
-    u8g2.print("IR_RR: ");
-    u8g2.print(analogRead(IR[4]));
+    sprintf(buffer, "IR_R:%4d", analogRead(IR[3]));
+    u8g2.drawStr(0, 40, buffer);
 
-    // 顯示更新的內容到 OLED 上
+    sprintf(buffer, "IR_RR:%4d", analogRead(IR[4]));
+    u8g2.drawStr(0, 50, buffer);
+
     u8g2.sendBuffer();
     delay(100);
 }
