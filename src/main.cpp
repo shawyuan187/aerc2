@@ -56,18 +56,24 @@ void loop()
     }
     delay(1000);
 
-    // PID_trail(true, []()
-    //           { return (IR_RR == 1); }, 90, 80, 0, 250, 0); // 1的循跡
+    // ? /////////////////////////// 1 - 12 ////////////////////////////
 
-    // while (IR_RR)
-    //     IR_update();
+    PID_trail(true, []()
+              { return (false); }, 75, 0, 0, 250, 500); // 1的循跡
+    PID_trail(true, []()
+              { return (false); }, 30, 0, 0, 100, 2700); // 1的循跡
+    PID_trail(true, []()
+              { return (IR_RR == 1); }, 30, 0, 0, 100, 0); // 1的循跡
 
-    // IR_update();
-    // while (!(IR_M))
-    // {
-    //     IR_update();
-    //     motor(50, -100);
-    // }
+    while (IR_RR)
+        IR_update();
+
+    IR_update();
+    while (!(IR_M))
+    {
+        IR_update();
+        motor(50, -100);
+    }
 
     // PID_trail(true, []()
     //           { return (IR_RR == 1); }, 90, 80, 0, 250, 0); // 2的循跡
@@ -82,7 +88,7 @@ void loop()
     // }
 
     // PID_trail(false, []()
-    //           { return (false); }, 100, 0, 0, 100, 1100); // 3的循跡
+    //           { return (false); }, 100, 20, 0, 100, 1100); // 3的循跡
     // PID_trail(false, []()
     //           { return (IR_RR == 1); }, 100, 0, 0, 100, 0); // 4的循跡
 
@@ -118,7 +124,7 @@ void loop()
     // }
 
     // motor(100, 100);
-    // delay(100); // 可能要調整
+    // delay(150); // 可能要調整
     // // 6的十字要越過
 
     // PID_trail(false, []()
@@ -218,10 +224,12 @@ void loop()
     //     motor(100, 100);
     //     IR_update();
     // }
-    // while (!(IR_LL)) // 11的左銳角迴轉
+
+    // delay(50);
+    // while (!(IR_RR)) // 11的左銳角迴轉
     // {
     //     IR_update();
-    //     motor(-100, 100);
+    //     motor(-100, 30);
     // }
 
     // IR_update();
@@ -268,6 +276,9 @@ void loop()
     // {
     //     forward();
     // }
+
+    // ? /////////////////////////// 12 - finsih ////////////////////////////
+    /*
 
     cmd_for_ms(trail, 300);
     PID_trail(false, []()
@@ -470,5 +481,7 @@ void loop()
     // PID_trail(false, []()
     //           { return (IR_L && IR_M && IR_R); }, 100, 0, 0, 250, 0);
     // ! /////////////////////////////finish///////////////////////////////////////
+
+    */
     stop();
 }
