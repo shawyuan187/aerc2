@@ -61,19 +61,110 @@ void loop()
     PID_trail(true, []()
               { return (false); }, 75, 0, 0, 250, 500); // 1的循跡
     PID_trail(true, []()
-              { return (false); }, 30, 0, 0, 100, 2700); // 1的循跡
+              { return (false); }, 30, 0, 0, 100, 2700); // 2 - 4的循跡
     PID_trail(true, []()
-              { return (IR_RR == 1); }, 30, 0, 0, 100, 0); // 1的循跡
+              { return (IR_RR == 1); }, 30, 0, 0, 100, 0); // 4的循跡
 
     while (IR_RR)
         IR_update();
 
     IR_update();
-    while (!(IR_M))
+    while (!(IR_M)) // 5的右直角
     {
         IR_update();
         motor(50, -100);
     }
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_R == 0 && IR_RR == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_R))
+    {
+        IR_update();
+        motor(100, -50);
+    }
+
+    motor(100, 100);
+    delay(150); // 可能要調整 (越過6的十字)
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0);
+
+    IR_update();
+    while (!(IR_L == 0 && IR_LL == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 100, 0, 0, 100, 0); // 7的循跡
+
+    IR_update();
+    while (!(IR_L == 0 && IR_LL == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 100, 0, 0, 100, 0); // 8的循跡
+
+    IR_update();
+    while (!(IR_R == 0 && IR_RR == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+
+    IR_update();
+    while (!(IR_R))
+    {
+        IR_update();
+        motor(100, -100);
+    }
+
+    PID_trail(false, []()
+              { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 100, 0, 0, 100, 0); // 9的循跡
+    IR_update();
+
+    // ! //////////////////////////// 10 未修復 ///////////////////////////////
+
+    // while (!(IR_L))
+    // {
+    //     IR_update();
+    //     motor(000, 150);
+    // }
+    // PID_trail(true, []()
+    //           { return (IR_RR == 1); }, 100, 0, 0, 100, 0); // 10的循跡
+    // IR_update();
+    // while (!(IR_L))
+    // {
+    //     motor(100, 20);
+    // }
+
+    // TODO: 原始程式
 
     // PID_trail(true, []()
     //           { return (IR_RR == 1); }, 90, 80, 0, 250, 0); // 2的循跡
