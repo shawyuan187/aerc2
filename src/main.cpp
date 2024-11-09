@@ -139,25 +139,27 @@ void loop()
     }
 
     IR_update();
+    motor(100, -100);
+    delay(130);
     while (!(IR_R))
     {
         IR_update();
         motor(100, -100);
     }
 
-    PID_trail(false, []()
-              { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 100, 0, 0, 100, 0); // 9的循跡
+    PID_trail(true, []()
+              { return (IR_LL == 0 && IR_L == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0); }, 100, 0, 0, 100, 0); // 9的循跡
     IR_update();
 
     // ! //////////////////////////// 10 未修復 ///////////////////////////////
 
-    // while (!(IR_L))
-    // {
-    //     IR_update();
-    //     motor(000, 150);
-    // }
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(50, 150);
+    }
     // PID_trail(true, []()
-    //           { return (IR_RR == 1); }, 100, 0, 0, 100, 0); // 10的循跡
+    //           { return (IR_R == 1 && IR_RR == 1); }, 100, 0, 0, 100, 0); // 10的循跡
     // IR_update();
     // while (!(IR_L))
     // {
