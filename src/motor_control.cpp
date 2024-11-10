@@ -475,3 +475,44 @@ void echoISR()
         distance = (duration / 2.0) / 29.1;
     }
 }
+
+void PID100_rightL()
+{
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 30, 0, 0, 100, 0);
+    while (!(IR_RR == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+    while (!(IR_RR))
+    {
+        IR_update();
+        motor(100, -100);
+    }
+    while (!(IR_RR == 0))
+    {
+        IR_update();
+        motor(100, -100);
+    }
+}
+void PID100_leftL()
+{
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 30, 0, 0, 100, 0);
+    while (!(IR_LL == 0))
+    {
+        motor(100, 100);
+        IR_update();
+    }
+    while (!(IR_LL))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+    while (!(IR_LL == 0))
+    {
+        IR_update();
+        motor(-100, 100);
+    }
+}
