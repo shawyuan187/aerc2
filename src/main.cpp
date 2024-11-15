@@ -183,91 +183,91 @@ void loop()
         }
     } // 連續大U結束
     // ! /////////////////////////////小U開始/////////////////////////////////////
-    for (int i = 0; i < 2; i++)
-    {
-        PID_trail(false, []()
-                  { return (IR_RR == 1); }, 35, 0, 0, 100, 0);
-        IR_update();
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(100, 100);
-        }
-        IR_update();
-        while (!(IR_RR))
-        {
-            IR_update();
-            motor(90, -100);
-        }
-        IR_update();
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(90, -100);
-        }
-        PID_trail(false, []()
-                  { return (IR_RR == 1); }, 35, 0, 0, 100, 0);
-        IR_update();
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(100, 100);
-        }
-        IR_update();
-        while (!(IR_RR))
-        {
-            IR_update();
-            motor(90, -100);
-        }
-        IR_update();
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(90, -100);
-        }
-        PID_trail(false, []()
-                  { return (IR_LL == 1); }, 35, 0, 0, 100, 0);
-        IR_update();
-        while (!(IR_LL == 0))
-        {
-            IR_update();
-            motor(100, 100);
-        }
-        stop();
-        IR_update();
-        while (!(IR_LL))
-        {
-            IR_update();
-            motor(0, U_speed_L);
-        }
-        while (!(IR_LL == 0))
-        {
-            IR_update();
-            motor(0, U_speed_L);
-        }
-    }
-    PID_trail(false, []()
-              { return (false); }, 100, 0, 0, 250, 200);
-    PID_trail(false, []()
-              { return (IR_LL == 1); }, 35, 0, 0, 100, 0);
-    IR_update();
-    while (!(IR_LL == 0))
-    {
-        IR_update();
-        motor(100, 100);
-    }
+    // for (int i = 0; i < 2; i++)
+    // {
+    //     PID_trail(false, []()
+    //               { return (IR_RR == 1); }, 35, 0, 0, 100, 0);
+    //     IR_update();
+    //     while (!(IR_RR == 0))
+    //     {
+    //         IR_update();
+    //         motor(100, 100);
+    //     }
+    //     IR_update();
+    //     while (!(IR_RR))
+    //     {
+    //         IR_update();
+    //         motor(90, -100);
+    //     }
+    //     IR_update();
+    //     while (!(IR_RR == 0))
+    //     {
+    //         IR_update();
+    //         motor(90, -100);
+    //     }
+    //     PID_trail(false, []()
+    //               { return (IR_RR == 1); }, 35, 0, 0, 100, 0);
+    //     IR_update();
+    //     while (!(IR_RR == 0))
+    //     {
+    //         IR_update();
+    //         motor(100, 100);
+    //     }
+    //     IR_update();
+    //     while (!(IR_RR))
+    //     {
+    //         IR_update();
+    //         motor(90, -100);
+    //     }
+    //     IR_update();
+    //     while (!(IR_RR == 0))
+    //     {
+    //         IR_update();
+    //         motor(90, -100);
+    //     }
+    //     PID_trail(false, []()
+    //               { return (IR_LL == 1); }, 35, 0, 0, 100, 0);
+    //     IR_update();
+    //     while (!(IR_LL == 0))
+    //     {
+    //         IR_update();
+    //         motor(100, 100);
+    //     }
+    //     stop();
+    //     IR_update();
+    //     while (!(IR_LL))
+    //     {
+    //         IR_update();
+    //         motor(0, U_speed_L);
+    //     }
+    //     while (!(IR_LL == 0))
+    //     {
+    //         IR_update();
+    //         motor(0, U_speed_L);
+    //     }
+    // }
+    // PID_trail(false, []()
+    //           { return (false); }, 100, 0, 0, 250, 200);
+    // PID_trail(false, []()
+    //           { return (IR_LL == 1); }, 35, 0, 0, 100, 0);
+    // IR_update();
+    // while (!(IR_LL == 0))
+    // {
+    //     IR_update();
+    //     motor(100, 100);
+    // }
     // ! /////////////////////////////小U結束/////////////////////////////////////
-    IR_update();
-    while (!(IR_LL)) // 左轉直到LL看到黑線
-    {
-        IR_update();
-        motor(-100, 90);
-    }
-    while (!(IR_LL == 0)) // 左轉直到LL看到白線
-    {
-        IR_update();
-        motor(-100, 90);
-    }
+    // IR_update();
+    // while (!(IR_LL)) // 左轉直到LL看到黑線
+    // {
+    //     IR_update();
+    //     motor(-100, 90);
+    // }
+    // while (!(IR_LL == 0)) // 左轉直到LL看到白線
+    // {
+    //     IR_update();
+    //     motor(-100, 90);
+    // }
     // ! /////////////////////////////開始避障循跡///////////////////////////////////////
     // ! /////////////////////////////結束避障循跡///////////////////////////////////////
 
