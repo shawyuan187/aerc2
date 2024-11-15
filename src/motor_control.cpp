@@ -18,19 +18,6 @@ void IR_update()
     IR_RR = analogRead(IR[4]) > IR_OFFSET ? 1 : 0;
 }
 
-// 更新左輪的脈衝數
-void updateLeftPulse()
-{
-    pulseLeft++;
-}
-
-// 更新右輪的脈衝數
-void updateRightPulse()
-{
-    pulseRight++;
-}
-
-// 控制左右輪的馬達
 void motor(int speedL, int speedR)
 {
     digitalWrite(motorLeftDir, speedL < 0 ? LOW : HIGH);
@@ -39,62 +26,10 @@ void motor(int speedL, int speedR)
     analogWrite(motorRightPWM, abs(speedR));
 }
 
-// 馬達脈衝對齊控制函數
-void controlMotors(int initialSpeedL, int initialSpeedR, long targetPulses, bool autoSync)
-{
-    const int minimumSpeed = -255; // 最小速度
-    const int maximumSpeed = 255;  // 最大速度
-    float Kp = 2;
-
-    int speedL = initialSpeedL;
-    int speedR = initialSpeedR;
-
-    pulseLeft = 0;
-    pulseRight = 0;
-
-    while (pulseLeft < targetPulses && pulseRight < targetPulses)
-    {
-        if (autoSync)
-        {
-            long pulseDifference = pulseLeft - pulseRight;
-
-            int adjustment = Kp * pulseDifference;
-
-            // 因為pulse永遠是正的但是馬達可能是負的(反轉)，所以要判斷正負來改變速度修正公式
-            if (initialSpeedL >= 0)
-                speedL = initialSpeedL - adjustment;
-            else
-                speedL = initialSpeedL + adjustment;
-
-            if (initialSpeedR >= 0)
-                speedR = initialSpeedR + adjustment;
-            else
-                speedR = initialSpeedR - adjustment;
-
-            speedL = constrain(speedL, minimumSpeed, maximumSpeed);
-            speedR = constrain(speedR, minimumSpeed, maximumSpeed);
-        }
-        motor(speedL, speedR);
-    }
-
-    motor(0, 0); // 停止馬達
-    Serial.println("運行完成");
-    Serial.print("Left Pulses: ");
-    Serial.println(pulseLeft);
-    Serial.print("Right Pulses: ");
-    Serial.println(pulseRight);
-    Serial.print("speedL: ");
-    Serial.println(speedL);
-    Serial.print("speedR: ");
-    Serial.println(speedR);
-    Serial.println("==================================");
-}
-
 // 沿著黑線走，紅外線感測器的數值為0~1023，白色為0，黑色為1023
 // 排列方式為IR[0]~IR[4]，IR[0]為最左邊的感測器，IR[4]為最右邊的感測器
 // 讀取IR感測器，白色為0，黑色為1
 
-// PID循跡
 void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms, bool useUltraSonic)
 {
     const int minimumSpeed = -255; // 最小速度
@@ -221,7 +156,6 @@ void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, floa
     }
 }
 
-// 循跡
 void trail()
 {
     IR_update();
@@ -267,86 +201,48 @@ void trail()
     }
 }
 
-void trail_X()
-{
-    IR_update();
-    if (IR_M)
-    {
-        if (IR_L)
-        {
-            mid_turn_left();
-        }
-        else if (IR_R)
-        {
-            mid_turn_right();
-        }
-        else
-        {
-            forward();
-        }
-    }
-    else
-    {
-        if (IR_L)
-        {
-            big_turn_left();
-        }
-        else if (IR_R)
-        {
-            big_turn_right();
-        }
-    }
-}
-// 前進
 void forward()
 {
     IR_update();
     motor(255, 255);
 }
 
-// 小左
 void small_turn_left()
 {
     IR_update();
     motor(220, 255);
 }
 
-// 小右
 void small_turn_right()
 {
     IR_update();
     motor(255, 220);
 }
 
-// 中左
 void mid_turn_left()
 {
     IR_update();
     motor(100, 255);
 }
 
-// 中右
 void mid_turn_right()
 {
     IR_update();
     motor(255, 100);
 }
 
-// 大左
 void big_turn_left()
 {
     IR_update();
     motor(30, 245);
 }
 
-// 大右
 void big_turn_right()
 {
     IR_update();
     motor(245, 30);
 }
 
-// 停止
 void stop()
 {
     IR_update();
