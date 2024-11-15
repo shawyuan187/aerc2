@@ -74,8 +74,8 @@ void OLED_display();
 void ultrasonic();
 // 超音波回波中斷
 void echoISR();
-// PID100 rightL
-void PID100_rightL();
-// PID100 leftL
-void PID100_leftL();
+// PID right
+void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0);
+// PID left
+void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0);
 #endif // MOTOR_CONTROL_H
