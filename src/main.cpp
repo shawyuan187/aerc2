@@ -63,27 +63,39 @@ void loop()
     PID_trail(true, []()
               { return (false); }, 30, 0, 0, 100, 2600); // 2 - 4的循跡
 
-        // PID100_rightL(); // 4的右直角
-    // PID100_rightL(); // 5的右直角
-    // delay(150);
-    // motor(100, 100);
-    // delay(100);      // 可能要調整 (越過6的十字)
-    // PID100_leftL();  // 6的左直角
-    // PID100_leftL();  // 7的左直角
-    // PID100_rightL(); // 8的右直角
-    // PID100_leftL();  // 9的左直角
-    // PID100_rightL(); // 10的右直角
-    // PID_trail(true, []()
-    //           { return (false); }, 30, 0, 0, 200, 300); // 10的循跡
-    // PID100_rightL();                                    // 10的右直角
-    // PID100_leftL();                                     // 11的左直角
+    IR_update();
+    while (!(IR_RR == 0 && IR_R == 0 && IR_M == 0 && IR_L == 0 && IR_LL == 0))
+    {
+        IR_update();
+        motor(100, 100);
+    }
+    while (!(IR_R == 1))
+    {
+        IR_update();
+        motor(90, -90);
+    }
 
-    // PID100_leftL(); // 11的銳角
-    // PID100_leftL(); // 12的右直角
-    // // ! TEST 12
+    PID100_rightL(); // 4的右直角
+    PID100_rightL(); // 5的右直角
+    delay(150);
+    motor(100, 100);
+    delay(100);      // 可能要調整 (越過6的十字)
+    PID100_leftL();  // 6的左直角
+    PID100_leftL();  // 7的左直角
+    PID100_rightL(); // 8的右直角
+    PID100_leftL();  // 9的左直角
+    PID100_rightL(); // 10的右直角
+    PID_trail(true, []()
+              { return (false); }, 30, 0, 0, 200, 300); // 10的循跡
+    PID100_rightL();                                    // 10的右直角
+    PID100_leftL();                                     // 11的左直角
 
-    // PID_trail(false, []()
-    //           { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 100, 0, 0, 100, 0); // 12的循跡,讓車子進良維持直行
+    PID100_leftL(); // 11的銳角
+    PID100_leftL(); // 11的左修正
+    // ! TEST 12
+
+    PID_trail(false, []()
+              { return (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0); }, 100, 0, 0, 100, 0); // 12的循跡,讓車子進良維持直行
 
     // while (!(IR_LL == 1))
     // {
