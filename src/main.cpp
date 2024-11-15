@@ -79,7 +79,7 @@ void loop()
     PID_right(100, 100, -100); // 5的右直角
     delay(150);
     motor(100, 100);
-    delay(120);                // 可能要調整 (越過6的十字)
+    delay(100);                // 可能要調整 (越過6的十字)
     PID_left(100, -100, 100);  // 6的左直角
     PID_left(100, -100, 100);  // 7的左直角
     PID_right(100, 100, -100); // 8的右直角
@@ -105,7 +105,7 @@ void loop()
         motor(255, 255);
     }
     cmd_for_ms(trail, 300);
-    PID_left(90, -90, 80); // 12的左轉
+    PID_left(90, -100, 90, 50, 50, true); // 12的左轉
     // ! /////////////////////////////////////13-24/////////////////////////////////////
 
     int U_250_time = 300;
@@ -116,50 +116,11 @@ void loop()
         // 右U開始
         PID_trail(false, []()
                   { return false; }, 100, 0, 0, 250, U_250_time);
-        PID_trail(false, []()
-                  { return (IR_RR == 1); }, 35, 0, 0, 100, 0);
-        IR_update();
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(100, 100);
-        }
-        stop();
-        IR_update();
-        while (!(IR_RR))
-        {
-            IR_update();
-            motor(U_speed_R, 0);
-        }
-        while (!(IR_RR == 0))
-        {
-            IR_update();
-            motor(U_speed_R, 0);
-        }
-
+        PID_right(100, U_speed_R, 0, 35, 0, true);
         // 左U開始
         PID_trail(false, []()
                   { return false; }, 100, 0, 0, 250, U_250_time);
-        PID_trail(false, []()
-                  { return (IR_LL == 1); }, 35, 0, 0, 100, 0);
-        IR_update();
-        while (!(IR_LL == 0))
-        {
-            IR_update();
-            motor(100, 100);
-        }
-        stop();
-        IR_update();
-        while (!(IR_LL))
-        {
-            IR_update();
-            motor(0, U_speed_L);
-        }
-        while (!(IR_LL == 0))
-        {
-            IR_update();
-            motor(0, U_speed_L);
-        }
+        PID_left(100, 0, U_speed_L, 35, 0, true);
     } // 連續大U結束
     // ! /////////////////////////////////////小U開始/////////////////////////////////////
     for (int i = 0; i < 2; i++)

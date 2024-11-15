@@ -476,7 +476,7 @@ void echoISR()
     }
 }
 
-void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd)
+void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd, bool useStop)
 {
     PID_trail(false, []()
               { return (IR_RR == 1); }, Kp, Kd, 0, baseSpeed, 0);
@@ -484,6 +484,10 @@ void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd
     {
         motor(baseSpeed, baseSpeed);
         IR_update();
+    }
+    if (useStop)
+    {
+        stop();
     }
     while (!(IR_RR))
     {
@@ -497,7 +501,7 @@ void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd
     }
 }
 
-void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd)
+void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd, bool useStop)
 {
     PID_trail(false, []()
               { return (IR_LL == 1); }, Kp, Kd, 0, baseSpeed, 0);
@@ -505,6 +509,10 @@ void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp, float Kd)
     {
         motor(baseSpeed, baseSpeed);
         IR_update();
+    }
+    if (useStop)
+    {
+        stop();
     }
     while (!(IR_LL))
     {

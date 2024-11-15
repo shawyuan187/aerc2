@@ -75,7 +75,7 @@ void ultrasonic();
 // 超音波回波中斷
 void echoISR();
 // PID right
-void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0);
+void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0, bool useStop = false);
 // PID left
-void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0);
+void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0, bool useStop = false);
 #endif // MOTOR_CONTROL_H
