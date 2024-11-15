@@ -74,8 +74,8 @@ void OLED_display();
 void ultrasonic();
 // 超音波回波中斷
 void echoISR();
-// PID right
+// PID之後右轉, 參數: 基礎速度, 左輪速度, 右輪速度, Kp, Kd, 離開黑線後是否停止
 void PID_right(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0, bool useStop = false);
-// PID left
+// PID之後左轉, 參數: 基礎速度, 左輪速度, 右輪速度, Kp, Kd, 離開黑線後是否停止
 void PID_left(int baseSpeed, int turnSpeedL, int turnSpeedR, float Kp = 30, float Kd = 0, bool useStop = false);
 #endif // MOTOR_CONTROL_H
