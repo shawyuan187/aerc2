@@ -20,7 +20,6 @@ const int echoPin = 3;                // 超音波 echo 引腳
 float distance = 0;                   // 超音波量測距離
 volatile unsigned long echoStart = 0; // 超音波回波開始時間
 volatile unsigned long echoEnd = 0;   // 超音波回波結束時間
-volatile bool measuring = false;      // 超音波是否正在量測
 
 // A1~A5為紅外線數值
 const int IR[5] = {A1, A2, A3, A4, A5};
