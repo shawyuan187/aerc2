@@ -32,6 +32,7 @@ void IR_update();
 void motor(int speedL, int speedR);
 // PID循跡
 void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250, unsigned long ms = 0, bool useUltraSonic = false);
+void PID_trail_left(bool useFiveIR, bool (*exitCondition)(), float Kp = 0, float Kd = 0, float Ki = 0, int baseSpeed = 250, unsigned long ms = 0);
 // 循跡
 void trail();
 // 小左

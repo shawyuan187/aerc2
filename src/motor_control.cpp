@@ -344,6 +344,105 @@ void OLED_display()
     delay(100);
 }
 
+void PID_trail_left(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms)
+{
+    const int minimumSpeed = -255; // 最小速度
+    const int maximumSpeed = 255;  // 最大速度
+    int lastError = 0;             // 上一次的偏差值
+    int integral = 0;              // 積分項
+
+    unsigned long start_time = millis();
+
+    while (true)
+    {
+        if (ms > 0 && millis() - start_time >= ms)
+        {
+            break;
+        }
+
+        IR_update();
+        // 計算偏差值
+        int error = 0;
+
+        if (useFiveIR)
+        {
+            if (IR_LL == 0 && IR_L == 0 && IR_M == 1 && IR_R == 0 && IR_RR == 0)
+            {
+                // error = 0;
+                error = -0.4;
+            }
+            else if (IR_LL == 0 && IR_L == 1 && IR_M == 1 && IR_R == 0 && IR_RR == 0)
+            {
+                error = -0.4;
+            }
+            else if (IR_LL == 0 && IR_L == 1 && IR_M == 0 && IR_R == 0 && IR_RR == 0)
+            {
+                error = -1.9;
+            }
+            else if (IR_LL == 1 && IR_L == 1 && IR_M == 0 && IR_R == 0 && IR_RR == 0)
+            {
+                error = -2.8;
+            }
+            else if (IR_LL == 1 && IR_L == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0)
+            {
+                error = -4.4;
+            }
+            else
+            {
+                error = lastError;
+            }
+        }
+        else
+        {
+            if (IR_L == 0 && IR_M == 1 && IR_R == 0)
+            {
+                // error = 0;
+                error = -0.4;
+            }
+            else if (IR_L == 1 && IR_M == 1 && IR_R == 0)
+            {
+                error = -0.4;
+            }
+            else if (IR_L == 1 && IR_M == 0 && IR_R == 0)
+            {
+                error = -1.9;
+            }
+            else
+            {
+                error = lastError;
+            }
+        }
+
+        // 計算積分項
+        integral += error;
+
+        // 計算微分項
+        int derivative = error - lastError;
+
+        // 計算調整值
+        int adjustment = Kp * error + Ki * integral + Kd * derivative;
+
+        // 計算新的馬達速度
+        int speedL = baseSpeed + adjustment;
+        int speedR = baseSpeed - adjustment;
+
+        // 限制速度在最小和最大速度之間
+        speedL = constrain(speedL, minimumSpeed, maximumSpeed);
+        speedR = constrain(speedR, minimumSpeed, maximumSpeed);
+
+        // 設置馬達速度
+        motor(speedL, speedR);
+
+        // 更新上一次的偏差值
+        lastError = error;
+
+        if (ms == 0 && exitCondition())
+        {
+            break;
+        }
+    }
+}
+
 void ultrasonic()
 {
     // 發送超音波觸發信號
