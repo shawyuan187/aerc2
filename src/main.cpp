@@ -60,7 +60,7 @@ void loop()
     PID_trail(true, []()
               { return (false); }, 75, 0, 0, 250, 500); // 1的循跡
     PID_trail(true, []()
-              { return (false); }, 50, 0, 0, 100, 2600); // 2 - 4的循跡
+              { return (false); }, 40, 5, 0, 90, 2900); // 2 - 4的循跡
 
     IR_update();
     while (!(IR_LL == 0 && IR_L == 0 && IR_M == 0 && IR_R == 0 && IR_RR == 0))
