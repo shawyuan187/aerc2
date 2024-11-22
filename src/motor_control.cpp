@@ -30,11 +30,10 @@ void motor(int speedL, int speedR)
 // 排列方式為IR[0]~IR[4]，IR[0]為最左邊的感測器，IR[4]為最右邊的感測器
 // 讀取IR感測器，白色為0，黑色為1
 
-void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms, bool useUltraSonic)
+int PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, float Ki, int baseSpeed, unsigned long ms, bool useUltraSonic, int lastError)
 {
     const int minimumSpeed = -255; // 最小速度
     const int maximumSpeed = 255;  // 最大速度
-    int lastError = 0;             // 上一次的偏差值
     int integral = 0;              // 積分項
 
     unsigned long start_time = millis();
@@ -154,6 +153,7 @@ void PID_trail(bool useFiveIR, bool (*exitCondition)(), float Kp, float Kd, floa
             break;
         }
     }
+    return lastError;
 }
 
 void trail()
