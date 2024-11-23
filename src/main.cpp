@@ -58,7 +58,8 @@ void loop()
     delay(1000);
 
     // * /////////////////////////////////////B圖/////////////////////////////////////
-    // ! ///////////////////////////////////// 電壓7.74~7.93 /////////////////////////////////////
+    // ! ///////////////////////////////////// 電壓7.74~7.93(wee) /////////////////////////////////////
+    //!  ///////////////////////////////////// 電壓7.79~7.77//////////////////////////////////////
     int error = 0;
     error = PID_trail(true, []()
                       { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
@@ -97,9 +98,100 @@ void loop()
     error = PID_trail(false, []()
                       { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false, error); //(8)
     error = PID_trail(false, []()
-                      { return (IR_RR == 0); }, 80, 0, 0, 250, 0, false, error); //(8)
+                      { return (IR_RR == 0); }, 80, 0, 0, 180, 0, false, error); //(8)
 
     PID_left(100, -100, 100, 30, 0, true); // 8往9的左轉
+    PID_trail(true, []()
+              { return (IR_RR == 1); }, 30, 0, 0, 100, 0);
+    PID_right(100, 100, -100, 30, 0, true);
+    PID_left(100, -100, 100, 30, 0, true);
+    PID_right(100, 100, -100, 30, 0, true);
+    error = PID_trail(true, []()
+                      { return (IR_LL == 1); }, 30, 0, 0, 100, 0, false);
+    error = PID_trail(true, []()
+                      { return (false); }, 30, 0, 0, 70, 500);
+    error = PID_trail(true, []()
+                      { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 30, 0, 0, 60, 0, false);
+    error = PID_trail(true, []()
+                      { return (false); }, 30, 0, 0, 60, 700, false, error);
+
+    // ! /////////////////////////////////////開始避障循跡///////////////////////////////////////
+    distance = 0;
+    PID_trail(false, []()
+              { return (distance > 0 && distance <= 15); }, 40, 0, 0, 100, 0, true);
+    stop();
+    while (!(IR_LL))
+    {
+        IR_update();
+        motor(100, 0);
+    }
+    while (!(IR_LL == 0))
+    {
+        IR_update();
+        motor(100, 0);
+    }
+    delay(100);
+    while (!(IR_L))
+    {
+        IR_update();
+        motor(40, 100);
+    }
+    PID_trail(true, []()
+              { return (false); }, 30, 0, 0, 10, 200);
+    distance = 0;
+    PID_trail(false, []()
+              { return (distance > 0 && distance <= 14); }, 40, 0, 0, 100, 0, true);
+    stop();
+    while (!(IR_RR))
+    {
+        IR_update();
+        motor(0, 110);
+    }
+    while (!(IR_RR == 0))
+    {
+        IR_update();
+        motor(0, 100);
+    }
+    delay(100);
+    while (!(IR_R))
+    {
+        IR_update();
+        motor(100, 45);
+    }
+    PID_left(100, -100, 100, 30, 0, true);
+    PID_left(100, -100, 100, 30, 0, true);
+    PID_left(100, -100, 80, 30, 0, true);
+    PID_trail(true, []()
+              { return (false); }, 30, 0, 0, 50, 500);
+    PID_trail(true, []()
+              { return (IR_M == 0 && IR_R == 0 && IR_L == 0); }, 30, 0, 0, 250, 0);
+    PID_trail(true, []()
+              { return (IR_M == 1 or IR_R == 1 or IR_L == 1); }, 30, 0, 0, 250, 0);
+    PID_right(100, 100, -100, 30, 0, true);
+
+    // PID_trail(true, []()
+    //           { return (IR_RR == 1); }, 70, 100, 0, 70, 0); // 前往2的右轉圓弧
+    // todo: trytrysee
+    error = PID_trail(true, []()
+                      { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
+    stop();
+    PID_trail(true, []()
+              { return (IR_R == 1); }, 70, 100, 0, 90, 0, false, error); // 2 的右轉
+    error = PID_trail(true, []()
+                      { return (IR_LL == 1); }, 70, 100, 0, 150, 0); // 前往3的左轉圓弧
+    stop();
+    error = PID_trail(true, []()
+                      { return (IR_LL == 0); }, 50, 20, 0, 90, 0, false, error); // 3的左轉
+    error = PID_trail(true, []()
+                      { return (IR_LL == 1); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
+
+    // todo: trytrysee
+    PID_right(100, 100, -100, 30, 0, true);
+    PID_trail(true, []()
+              { return (IR_L == 1 && IR_M == 1 && IR_R == 1); }, 30, 0, 0, 250, 0);
+    motor(-255, -255);
+    delay(100);
+    // ! /////////////////////////////////////結束避障循跡///////////////////////////////////////
     // ? ///////////////////////////////////////測試中///////////////////////////////////////
     // PID_right(100, 125, -25, 30, 0);      //(6)
     // PID_left(100, -100, 100);
