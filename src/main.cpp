@@ -68,7 +68,7 @@ void loop()
                       { return (IR_R == 1); }, 30, 0, 0, 90, 0, false, error); // 2 的右轉
 
     error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 70, 100, 0, 150, 0); // 前往3的左轉圓弧
+                      { return (IR_LL == 1); }, 70, 100, 0, 140, 0); // 前往3的左轉圓弧
     stop();
     error = PID_trail(true, []()
                       { return (IR_LL == 0); }, 50, 20, 0, 90, 0, false, error); // 3的左轉
@@ -158,19 +158,18 @@ void loop()
         IR_update();
         motor(100, 45);
     }
+    // ! /////////////////////////////////////結束避障循跡/////////////////////////////////////
     PID_left(100, -100, 100, 30, 0, true);
     PID_left(100, -100, 100, 30, 0, true);
     PID_left(100, -100, 80, 30, 0, true);
     PID_trail(true, []()
-              { return (false); }, 30, 0, 0, 50, 500);
+              { return (false); }, 30, 0, 0, 50, 600);
     PID_trail(true, []()
               { return (IR_M == 0 && IR_R == 0 && IR_L == 0); }, 30, 0, 0, 250, 0);
     PID_trail(true, []()
               { return (IR_M == 1 or IR_R == 1 or IR_L == 1); }, 30, 0, 0, 250, 0);
     PID_right(100, 100, -100, 30, 0, true);
 
-    // PID_trail(true, []()
-    //           { return (IR_RR == 1); }, 70, 100, 0, 70, 0); // 前往2的右轉圓弧
     // todo: trytrysee
     error = PID_trail(true, []()
                       { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
@@ -181,128 +180,13 @@ void loop()
                       { return (IR_LL == 1); }, 70, 100, 0, 150, 0); // 前往3的左轉圓弧
     stop();
     error = PID_trail(true, []()
-                      { return (IR_LL == 0); }, 50, 20, 0, 90, 0, false, error); // 3的左轉
-    error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
+                      { return (IR_L == 1); }, 50, 20, 0, 90, 0, false, error); // 3的左轉
 
     // todo: trytrysee
     PID_right(100, 100, -100, 30, 0, true);
     PID_trail(true, []()
               { return (IR_L == 1 && IR_M == 1 && IR_R == 1); }, 30, 0, 0, 100, 0);
-    motor(-255, -255);
-    delay(100);
-    // ! /////////////////////////////////////結束避障循跡///////////////////////////////////////
-    // ? ///////////////////////////////////////測試中///////////////////////////////////////
-    // PID_right(100, 125, -25, 30, 0);      //(6)
-    // PID_left(100, -100, 100);
-    // PID_trail(true, []()
-    //           { return (IR_LL == 1); }, 30, 0, 0, 100, 0);
 
-    // while (!(IR_LL == 0))
-    // {
-    //     motor(100, 100);
-    //     IR_update();
-    // }
-    // while (!(IR_L))
-    // {
-    //     IR_update();
-    //     motor(-100, 100);
-    // }
-    // PID_trail(false, []()
-    //           { return (IR_LL == 1); }, 30, 0, 0, 100, 0);
-    // while (!(IR_LL == 0))
-    // {
-    //     motor(100, 100);
-    //     IR_update();
-    // }
-    // while (!(IR_L))
-    // {
-    //     IR_update();
-    //     motor(-100, 100);
-    // }
-    // PID_trail(false, []()
-    //           { return (false); }, 30, 0, 0, 100, 100);
-    // stop();
-    // // ! ///////////////////////////////////////開始避障///////////////////////////////////////
-    // distance = 0;
-    // PID_trail(false, []()
-    //           { return (distance <= 20 && distance > 0); }, 30, 0, 0, 100, 0, true);
-    // stop();
-    // IR_update();
-    // while (!(IR_LL))
-    // {
-    //     motor(100, -100);
-    //     IR_update();
-    // }
-
-    // while (!(IR_LL == 0))
-    // {
-    //     motor(250, -250);
-    //     IR_update();
-    // }
-    // while (!(IR_L))
-    // {
-    //     IR_update();
-    //     motor(80, 190);
-    // }
-    // distance = 0;
-    // PID_trail(false, []()
-    //           { return (distance <= 20 && distance > 0); }, 30, 0, 0, 50, 0, true);
-
-    // stop();
-    // IR_update();
-    // while (!(IR_RR))
-    // {
-    //     motor(-100, 100);
-    //     IR_update();
-    // }
-
-    // while (!(IR_RR == 0))
-    // {
-    //     motor(-250, 250);
-    //     IR_update();
-    // }
-    // while (!(IR_R))
-    // {
-    //     IR_update();
-    //     motor(205, 100);
-    // }
-    // PID_left(100, -100, 100);
-    // // ! ///////////////////////////////////////結束避障///////////////////////////////////////
-    // PID_left(100, -100, 100);
-    // PID_left(100, -100, 100);
-    // PID_trail(false, []()
-    //           { return (false); }, 30, 0, 0, 100, 400);
-    // PID_trail(false, []()
-    //           { return (IR_RR == 0 && IR_R == 0 && IR_M == 0 && IR_L == 0 && IR_LL == 0); }, 30, 0, 0, 100, 0);
-    // while (!(IR_RR || IR_R || IR_M || IR_L || IR_LL))
-    // {
-    //     motor(255, 255);
-    //     IR_update();
-    // }
-    // PID_right(100, 100, -100, 30, 0, true);
-    // PID_trail(true, []()
-    //           { return (IR_LL == 1); }, 80, 90, 0, 250, 0);
-    // while (!(IR_LL == 0))
-    // {
-    //     motor(100, 100);
-    //     IR_update();
-    // }
-    // while (!(IR_LL))
-    // {
-    //     IR_update();
-    //     motor(-100, 100);
-    // }
-    // while (!(IR_LL == 0))
-    // {
-    //     IR_update();
-    //     motor(-100, 100);
-    // }
-
-    // PID_trail(true, []()
-    //           { return (false); }, 30, 0, 0, 100, 800);
-    // PID_trail(false, []()
-    //           { return (IR_R == 1 and IR_M == 1 and IR_L == 1); }, 80, 90, 0, 250, 0);
     // ! ///////////////////////////////////// 電壓7.74~7.93 /////////////////////////////////////
     stop();
 }
