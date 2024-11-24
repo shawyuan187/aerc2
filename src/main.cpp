@@ -23,7 +23,7 @@ volatile unsigned long echoEnd = 0;   // 超音波回波結束時間
 
 // A1~A5為紅外線數值
 const int IR[5] = {A1, A2, A3, A4, A5};
-
+// ew
 void setup()
 {
     // 設置馬達和編碼器的引腳
@@ -100,10 +100,10 @@ void loop()
               { return (IR_LL == 1); }, 80, 90, 0, 100, 0); // 19的循跡
     delay(100);
 
-    PID_left(90, -90, 90, 40, 30, true);    // 6的左直角
+    PID_left(90, -90, 90, 40, 30, true); // 6的左直角
     PID_right(90, 90, -90, 30, 0, true); // 7的右直角
     PID_right(90, 90, -90, 30, 0, true); // 7的右直角
-    
+
     PID_left(100, -100, 100, 30, 0, true); // 7的左直角
     PID_left(100, -100, 100, 30, 0, true); // 8的左直角
     PID_trail(false, []()
