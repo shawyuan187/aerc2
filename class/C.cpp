@@ -23,7 +23,7 @@ volatile unsigned long echoEnd = 0;   // 超音波回波結束時間
 
 // A1~A5為紅外線數值
 const int IR[5] = {A1, A2, A3, A4, A5};
-
+// ew
 void setup()
 {
     // 設置馬達和編碼器的引腳
@@ -45,7 +45,7 @@ void setup()
     OLED_init(); // OLED 初始化
     // Serial.begin(9600);
 }
-
+int error = 0;
 void loop()
 {
     // 按按鈕
@@ -57,7 +57,9 @@ void loop()
     }
     delay(1000);
 
-    // ! ///////////////////////////////////// 電壓7.74~7.93 /////////////////////////////////////
+    // * /////////////////////////////////////C圖/////////////////////////////////////
+    // ! ///////////////////////////////////// 電壓7.74~7.93(wee) /////////////////////////////////////
+    //!  ///////////////////////////////////// 電壓7.79~7.77//////////////////////////////////////
     PID_right(100, 100, -100, 30, 0, true); // 1的右直角
     PID_right(100, 90, -90, 30, 0, true);   // 2的右角
     PID_left(100, -90, 90, 30, 0, true);    // 3的左直角
@@ -66,8 +68,8 @@ void loop()
 
     PID_trail(false, []()
               { return (false); }, 40, 0, 0, 100, 500); //(3↑)  1250
-    PID_trail(false, []()
-              { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 40, 0, 0, 90, 0); //(3↑)  1250
+    error = PID_trail(false, []()
+                      { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 40, 0, 0, 90, 0); //(3↑)  1250
     stop();
     delay(100);
 
@@ -76,7 +78,7 @@ void loop()
     while (true)
     {
         IR_update();
-        motor(60, -100);
+        motor(60, -110);
 
         if ((millis() - startTime >= 250) || (IR_L || IR_M || IR_R))
         {
@@ -85,69 +87,38 @@ void loop()
     }
     // TODO:SUPER FUCKING IMPORTANT END
     //! sooooo fucking need to fix this
-    PID_trail_left(false, []()
-                   { return (false); }, 60, 90, 0, 100, 1250); //(4↑)  1250
+    error = PID_trail(false, []()
+                      { return (false); }, 60, 90, 0, 100, 200, false, error); //(4↑)  1250
+    PID_trail(false, []()
+              { return (IR_RR == 1); }, 60, 90, 0, 100, 0, false, error); //(4↑)  1250
 
     stop();
-    motor(100, 100);
-    delay(50); // ! 虛線結束紅外線要離開有線的區域到全白，最好輪子中心在虛線尾端
+    // ! 虛線結束紅外線要離開有線的區域到全白，最好輪子中心在虛線尾端
     //! sooooo fucking need to fix this until here
-    IR_update();
-    while (!(IR_LL == 1))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_LL == 0))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_R == 1))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    motor(100, 100);
-    delay(100);
+    PID_right(100, 100, -100, 30, 0, true); // 9的右直角
     PID_trail(false, []()
-              { return (false); }, 40, 30, 0, 90, 400); // 5 慢速穩定直走
-    PID_left(90, -100, 100, 40, 30, true);              // 6的左直角
-    motor(100, 100);
-    delay(50); // ! 面向圓圈往前一點點讓後面條件不會誤判
-    IR_update();
-    while (!(IR_LL))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_LL == 0))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_RR))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_M))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    PID_right(100, 100, -100, 30, 0, true); // 7的右直角
-    PID_left(100, -100, 100, 30, 0, true);  // 7的左直角
-    PID_left(100, -100, 100, 30, 0, true);  // 8的左直角
+              { return (IR_LL == 1); }, 80, 90, 0, 100, 0); // 19的循跡
+    delay(100);
+
+    PID_left(90, -90, 90, 40, 30, true); // 6的左直角
+    PID_right(90, 90, -90, 30, 0, true); // 7的右直角
+    PID_right(90, 90, -90, 30, 0, true); // 7的右直角
+
+    PID_left(100, -100, 100, 30, 0, true); // 7的左直角
+    PID_left(100, -100, 100, 30, 0, true); // 8的左直角
     PID_trail(false, []()
               { return (IR_RR == 1); }, 30, 0, 0, 100, 0); // 9的忽略右路
     delay(100);
     PID_right(100, 100, -100, 30, 0, true); // 9的右直角
     PID_right(100, 100, -100, 30, 0, true); // 10的右直角
     PID_left(100, -100, 100, 30, 0, true);  // 12的左直角
-    PID_left(100, -100, 100, 30, 0, true);  // 12的左直角
-    PID_left(100, -100, 100, 50, 40, true); // 13的左直角
-    PID_right(100, 100, -100, 30, 0, true); // 14的右直角
+    error = PID_trail(false, []()
+                      { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 80, 90, 0, 150, 0); // 19的循跡
+    PID_trail(false, []()
+              { return (IR_L == 1 or IR_R == 1 or IR_M == 1); }, 80, 90, 0, 150, 0, false, error); // 19的循跡
+    PID_left(100, -100, 100, 30, 0, true);                                                         // 12的左直角
+    PID_left(100, -100, 100, 50, 40, true);                                                        // 13的左直角
+    PID_right(100, 100, -100, 30, 0, true);                                                        // 14的右直角
 
     PID_trail(true, []()
               { return (false); }, 50, 40, 0, 150, 1300); // ! 調整時間，從15走道弧線入口
@@ -174,7 +145,8 @@ void loop()
     PID_left(100, -100, 100, 30, 0, true); // 18的左直角
     PID_trail(false, []()
               { return (IR_L == 1 and IR_R == 1 and IR_M == 1); }, 80, 90, 0, 250, 0); // 19的循跡
-
+    motor(-255, -255);
+    delay(50);
     // ! ///////////////////////////////////// 電壓7.74~7.93 /////////////////////////////////////
     stop();
 }
