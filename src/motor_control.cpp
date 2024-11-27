@@ -362,6 +362,14 @@ void OLED_display()
     sprintf(buffer, "Dist:%3dcm", (int)distance);
     u8g2.drawStr(64, 10, buffer);
 
+    // 新增：顯示計時資訊
+    unsigned long seconds = lapTime / 1000;
+    unsigned long minutes = seconds / 60;
+    seconds = seconds % 60;
+
+    sprintf(buffer, "Time:%02lu:%02lu", minutes, seconds);
+    u8g2.drawStr(64, 20, buffer);
+
     u8g2.sendBuffer();
     delay(100);
     distance = 0;
