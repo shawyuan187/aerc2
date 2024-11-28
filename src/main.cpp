@@ -84,6 +84,7 @@ void loop()
     error = PID_trail(false, []()
                       { return (IR_RR == 1); }, 30, 0, 0, 90, 0, false, error);
     stop();
+    // TODO: 修正飛出去
     PID_trail(false, []()
               { return (false); }, 60, 0, 0, 150, 200); // 3的循跡
     PID_right(100, 100, 0, 30, 0, true);                // 3的弧線結尾
@@ -92,11 +93,12 @@ void loop()
     stop();
     PID_right(100, 100, -100, 30, 0, true); // 4的右直角
     PID_right(100, 100, 0, 30, 0, true);    // 5的右直角
-    PID_left(100, -100, 100);               // 6的左直角
-    PID_left(100, -100, 100);               // 7的左直角
-    PID_right(100, 100, -100);              // 8的右直角
-    PID_left(100, -100, 100);               // 9的左直角
-    PID_right(100, 100, -100);              // 10的右直角
+    // TODO: 修正 6 的左直角
+    PID_left(100, -100, 100);  // 6的左直角
+    PID_left(100, -100, 100);  // 7的左直角
+    PID_right(100, 100, -100); // 8的右直角
+    PID_left(100, -100, 100);  // 9的左直角
+    PID_right(100, 100, -100); // 10的右直角
     PID_trail(true, []()
               { return (false); }, 30, 0, 0, 200, 300); // 10的循跡
     PID_right(100, 100, -100);                          // 10的右直角
@@ -119,7 +121,7 @@ void loop()
     cmd_for_ms(trail, 300);
     PID_left(90, -100, 90, 50, 50, true); // 12的左轉
     // ! /////////////////////////////////////大U開始/////////////////////////////////////
-
+    // TODO: 修正 13 的直線
     for (int i = 0; i < 2; i++)
     {
         error = PID_trail(true, []()
