@@ -215,7 +215,7 @@ void loop()
         motor(100, 0);
     }
     delay(100);
-    while (!(IR_R))
+    while (!(IR_M))
     {
         IR_update();
         motor(40, 100);
@@ -225,11 +225,8 @@ void loop()
         IR_update();
         motor(40, 100);
     }
-    while (!(IR_M))
-    {
-        IR_update();
-        motor(100, -100);
-    }
+    delay(50);
+    PID_right(100, 100, -100, 40, 0, true);
     stop();
 
     // ! /////////////////////////////////////結束避障循跡///////////////////////////////////////
