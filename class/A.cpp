@@ -59,11 +59,13 @@ void loop()
         OLED_display(); // OLED 顯示IR真實數值
     }
     delay(1000);
+
     startTime = millis(); // 新增：記錄開始時間
 
     // * /////////////////////////////////////A圖/////////////////////////////////////
     // ! ///////////////////////////////////// 電壓7.74~7.93(wee) /////////////////////////////////////
     // ! ///////////////////////////////////// 電壓7.79~7.77/////////////////////////////////////
+
     PID_trail(true, []()
               { return (false); }, 75, 0, 0, 250, 500); // 1的循跡
     error = PID_trail(true, []()
@@ -82,6 +84,7 @@ void loop()
     error = PID_trail(false, []()
                       { return (IR_RR == 1); }, 30, 0, 0, 90, 0, false, error);
     stop();
+    // TODO: 修正飛出去
     PID_trail(false, []()
               { return (false); }, 60, 0, 0, 150, 200); // 3的循跡
     PID_right(100, 100, 0, 30, 0, true);                // 3的弧線結尾
@@ -90,11 +93,12 @@ void loop()
     stop();
     PID_right(100, 100, -100, 30, 0, true); // 4的右直角
     PID_right(100, 100, 0, 30, 0, true);    // 5的右直角
-    PID_left(100, -100, 100);               // 6的左直角
-    PID_left(100, -100, 100);               // 7的左直角
-    PID_right(100, 100, -100);              // 8的右直角
-    PID_left(100, -100, 100);               // 9的左直角
-    PID_right(100, 100, -100);              // 10的右直角
+    // TODO: 修正 6 的左直角
+    PID_left(100, -100, 100);  // 6的左直角
+    PID_left(100, -100, 100);  // 7的左直角
+    PID_right(100, 100, -100); // 8的右直角
+    PID_left(100, -100, 100);  // 9的左直角
+    PID_right(100, 100, -100); // 10的右直角
     PID_trail(true, []()
               { return (false); }, 30, 0, 0, 200, 300); // 10的循跡
     PID_right(100, 100, -100);                          // 10的右直角
@@ -117,11 +121,13 @@ void loop()
     cmd_for_ms(trail, 300);
     PID_left(90, -100, 90, 50, 50, true); // 12的左轉
     // ! /////////////////////////////////////大U開始/////////////////////////////////////
-
+    // TODO: 修正 13 的直線
     for (int i = 0; i < 2; i++)
     {
         error = PID_trail(true, []()
-                          { return (IR_RR == 1); }, 70, 100, 0, 130, 0);
+                          { return (false); }, 70, 100, 0, 250, 150, false, error);
+        error = PID_trail(true, []()
+                          { return (IR_RR == 1); }, 70, 100, 0, 100, 0, false, error);
         stop();
         error = PID_trail(true, []()
                           { return (IR_RR == 0); }, 20, 0, 0, 70, 0, false, error);
@@ -132,7 +138,9 @@ void loop()
                   { return (false); }, 40, 0, 0, 100, 500);
 
         error = PID_trail(true, []()
-                          { return (IR_LL == 1); }, 70, 100, 0, 130, 0);
+                          { return (false); }, 70, 100, 0, 250, 150, false, error);
+        error = PID_trail(true, []()
+                          { return (IR_LL == 1); }, 70, 100, 0, 100, 0, false, error);
         stop();
         error = PID_trail(true, []()
                           { return (IR_LL == 0); }, 20, 0, 0, 70, 0, false, error);
@@ -181,12 +189,22 @@ void loop()
         PID_trail(false, []()
                   { return (false); }, 40, 0, 0, 100, 300);
     }
-    PID_left(100, -100, 100, 40, 0, true);
+    PID_trail(false, []()
+              { return (IR_LL == 1); }, 70, 100, 0, 130, 0); // 29 黑線
+    PID_trail(false, []()
+              { return (IR_LL == 0); }, 70, 100, 0, 130, 0); // 衝出 29 黑線
+    motor(-100, -100);                                       // stop
+    delay(100);                                              // stop
+    while (!(IR_LL))                                         // 定輪轉
+    {
+        IR_update();
+        motor(0, 150);
+    }
     // ! /////////////////////////////////////小U結束/////////////////////////////////////
     // ! /////////////////////////////////////開始避障循跡///////////////////////////////////////
     distance = 0;
     PID_trail(false, []()
-              { return (distance > 0 && distance <= 15); }, 40, 0, 0, 100, 0, true);
+              { return (distance > 0 && distance <= 15); }, 40, 0, 0, 80, 0, true);
     stop();
     while (!(IR_LL))
     {
@@ -199,7 +217,7 @@ void loop()
         motor(100, 0);
     }
     delay(100);
-    while (!(IR_R))
+    while (!(IR_M))
     {
         IR_update();
         motor(40, 100);
@@ -209,11 +227,8 @@ void loop()
         IR_update();
         motor(40, 100);
     }
-    while (!(IR_M))
-    {
-        IR_update();
-        motor(100, -100);
-    }
+    delay(50);
+    PID_right(100, 100, -100, 40, 0, true);
     stop();
 
     // ! /////////////////////////////////////結束避障循跡///////////////////////////////////////
