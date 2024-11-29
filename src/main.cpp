@@ -69,15 +69,20 @@ void loop()
                       { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
     stop();
     error = PID_trail(true, []()
+                      { return (IR_RR == 0); }, 30, 0, 0, 90, 0, false, error);
+    error = PID_trail(false, []()
                       { return (IR_R == 1); }, 30, 0, 0, 90, 0, false, error); // 2 的右轉
 
     error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 70, 100, 0, 140, 0); // 前往3的左轉圓弧
+                      { return (false); }, 70, 100, 0, 130, 300); // 前往3的左轉圓弧
+
+    error = PID_trail(false, []()
+                      { return (IR_LL == 1); }, 70, 100, 0, 150, 0); // 前往3的左轉圓弧
     stop();
     error = PID_trail(true, []()
-                      { return (IR_LL == 0); }, 50, 20, 0, 90, 0, false, error); // 3的左轉
-    error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
+                      { return (IR_LL == 0); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
+    error = PID_trail(false, []()
+                      { return (IR_L == 1); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
 
     PID_right(100, 100, -100, 30, 0, true); // 4的右轉
     PID_right(100, 90, -90, 30, 0, true);   // 4的右轉
