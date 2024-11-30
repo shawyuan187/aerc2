@@ -64,141 +64,159 @@ void loop()
     // * /////////////////////////////////////B圖/////////////////////////////////////
     // ! ///////////////////////////////////// 電壓7.74~7.93(wee) /////////////////////////////////////
     // ! ///////////////////////////////////// 電壓7.79~7.77//////////////////////////////////////
-    int error = 0;
-    error = PID_trail(true, []()
-                      { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
-    stop();
-    error = PID_trail(true, []()
-                      { return (IR_RR == 0); }, 30, 0, 0, 90, 0, false, error);
-    error = PID_trail(false, []()
-                      { return (IR_R == 1); }, 30, 0, 0, 90, 0, false, error); // 2 的右轉
-
-    error = PID_trail(true, []()
-                      { return (false); }, 70, 100, 0, 130, 300); // 前往3的左轉圓弧
-
-    error = PID_trail(false, []()
-                      { return (IR_LL == 1); }, 70, 100, 0, 150, 0); // 前往3的左轉圓弧
-    stop();
-    error = PID_trail(true, []()
-                      { return (IR_LL == 0); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
-    error = PID_trail(false, []()
-                      { return (IR_L == 1); }, 50, 0, 0, 90, 0, false, error); // 3的左轉
-
-    PID_right(100, 100, -100, 30, 0, true); // 4的右轉
-    PID_right(100, 90, -90, 30, 0, true);   // 4的右轉
-    PID_left(100, -100, 100, 30, 0, true);  // 5虛線後左轉
-    PID_left(100, -100, 100, 30, 0, true);  // 6的左轉
-    PID_right(100, 100, -100, 30, 0, true); // 6往7的右轉
-    IR_update();
-    while (!(IR_M == 1))
+    while (IR_L == 1 && IR_M == 1 && IR_R == 1)
     {
-        IR_update();
-        motor(90, -90);
-    }
 
-    error = PID_trail(false, []()
-                      { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false); //(8)
-    error = PID_trail(false, []()
-                      { return (IR_RR == 0); }, 80, 0, 0, 250, 0, false, error); //(8)
-    error = PID_trail(false, []()
-                      { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false, error); //(8)
-    error = PID_trail(false, []()
-                      { return (IR_RR == 0); }, 80, 0, 0, 250, 0, false, error); //(8)
-    error = PID_trail(false, []()
-                      { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false, error); //(8)
-    error = PID_trail(false, []()
-                      { return (IR_RR == 0); }, 80, 0, 0, 180, 0, false, error); //(8)
+        int error = 0;
+        error = PID_trail(true, []()
+                          { return (IR_RR == 1); }, 70, 100, 0, 150, 0); // 前往2的右轉圓弧
+        stop();
+        error = PID_trail(true, []()
+                          { return (IR_RR == 0); }, 30, 0, 0, 90, 0, false, error);
+        error = PID_trail(false, []()
+                          { return (IR_R == 1); }, 30, 0, 0, 90, 0, false, error); // 2 的右轉
 
-    PID_left(100, -100, 100, 30, 0, true); // 8 ~ 9 的左直角
-    PID_trail(true, []()
-              { return (IR_RR == 1); }, 30, 0, 0, 100, 0); // 向前衝到 RR 看到黑線 (9)
-    PID_right(100, 100, -100, 30, 0, true);                // 9 ~ 10 的右角
-    PID_left(100, -100, 100, 30, 0, true);                 // 10 的左直角
-    PID_right(100, 100, -100, 30, 0, true);                // 10 ~ 11 的右角
-    error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 30, 0, 0, 100, 0, false);
-    error = PID_trail(true, []()
-                      { return (false); }, 30, 0, 0, 70, 500);
-    error = PID_trail(true, []()
-                      { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 30, 0, 0, 60, 0, false); // 11 + 12 的弧形
-    error = PID_trail(true, []()
-                      { return (false); }, 30, 0, 0, 60, 700, false, error); // 在紅線前轉正
+        error = PID_trail(true, []()
+                          { return (false); }, 70, 100, 0, 120, 300); // 前往3的左轉圓弧
 
-    // ! /////////////////////////////////////開始右避障循跡///////////////////////////////////////
-    distance = 0;
-    PID_trail(false, []()
-              { return (distance > 0 && distance <= 15); }, 40, 0, 0, 100, 0, true);
-    stop();
-    while (!(IR_LL))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    while (!(IR_LL == 0))
-    {
-        IR_update();
-        motor(100, 0);
-    }
-    delay(100);
-    while (!(IR_L))
-    {
-        IR_update();
-        motor(40, 100);
-    }
-    // ! /////////////////////////////////////結束右避障循跡///////////////////////////////////////
-    PID_trail(true, []()
-              { return (false); }, 30, 0, 0, 10, 200);
-    // ! /////////////////////////////////////開始左避障循跡///////////////////////////////////////
-    distance = 0;
-    PID_trail(false, []()
-              { return (distance > 0 && distance <= 14); }, 40, 0, 0, 100, 0, true);
-    stop();
-    while (!(IR_RR))
-    {
-        IR_update();
-        motor(0, 110);
-    }
-    while (!(IR_RR == 0))
-    {
-        IR_update();
-        motor(0, 100);
-    }
-    delay(100);
-    while (!(IR_R))
-    {
-        IR_update();
-        motor(100, 45);
-    }
-    // ! /////////////////////////////////////結束左避障循跡/////////////////////////////////////
-    PID_left(100, -100, 100, 30, 0, true); // 左轉正到 14 的線上
-    PID_left(100, -100, 100, 30, 0, true); // 14 ~ 15 的左直角
-    PID_left(100, -100, 80, 30, 0, true);  // 15 ~ 16 的左直角
-    PID_trail(true, []()
-              { return (false); }, 30, 0, 0, 50, 600);
-    PID_trail(true, []()
-              { return (IR_M == 0 && IR_R == 0 && IR_L == 0); }, 30, 0, 0, 250, 0); // 向前衝到 16 的空白處
-    PID_trail(true, []()
-              { return (IR_M == 1 or IR_R == 1 or IR_L == 1); }, 30, 0, 0, 250, 0); // 衝到 16 的黑線
-    PID_right(100, 100, -100, 30, 0, true);                                         // 16 ~ 17的右直角
+        error = PID_trail(false, []()
+                          { return (IR_LL == 1); }, 70, 100, 0, 120, 0); // 前往3的左轉圓弧
+        stop();
+        error = PID_trail(true, []()
+                          { return (IR_LL == 0); }, 50, 0, 0, 80, 0, false, error); // 3的左轉
+        error = PID_trail(false, []()
+                          { return (IR_L == 1); }, 50, 0, 0, 70, 0, false, error); // 3的左轉
 
-    // TODO: trytrysee
-    error = PID_trail(true, []()
-                      { return (IR_RR == 1); }, 70, 100, 0, 150, 0);
-    stop(); // 直走衝到 RR 看到黑線
-    PID_trail(true, []()
-              { return (IR_R == 1); }, 70, 100, 0, 90, 0, false, error); // 超出 17 的黑線
-    error = PID_trail(true, []()
-                      { return (IR_LL == 1); }, 70, 100, 0, 150, 0);
-    stop(); // 完成 18 的 U 轉彎 + 直走到 LL 看到黑線
-    error = PID_trail(true, []()
-                      { return (IR_L == 1); }, 50, 20, 0, 90, 0, false, error);
+        PID_right(100, 100, -100, 30, 0, true); // 4的右轉
+        PID_right(100, 90, -90, 30, 0, true);   // 4的右轉
+        PID_trail(true, []()
+                  { return (false); }, 30, 0, 0, 250, 300); // 4的右轉圓弧
 
-    // TODO: trytrysee
-    PID_right(100, 100, -100, 30, 0, true); // 19 ~ 20 的右直角
-    PID_trail(true, []()
-              { return (IR_L == 1 && IR_M == 1 && IR_R == 1); }, 30, 0, 0, 100, 0); // 衝 FINISH
+        PID_left(100, -100, 100, 30, 0, true);  // 5虛線後左轉
+        PID_left(100, -100, 100, 30, 0, true);  // 6的左轉
+        PID_right(100, 100, -100, 30, 0, true); // 6往7的右轉
+        IR_update();
+        // while (!(IR_M == 1))
+        // {
+        //     IR_update();
+        //     motor(90, -90);
+        // }
 
+        error = PID_trail(false, []()
+                          { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false); //(8)
+        delay(100);
+        // error = PID_trail(false, []()
+        //                   { return (IR_RR == 0); }, 80, 0, 0, 250, 0, false, error); //(8)
+        error = PID_trail(false, []()
+                          { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false, error); //(8)
+        delay(100);
+
+        // error = PID_trail(false, []()
+        //                   { return (IR_RR == 0); }, 80, 0, 0, 250, 0, false, error); //(8)
+        error = PID_trail(false, []()
+                          { return (IR_RR == 1); }, 80, 0, 0, 250, 0, false, error); //(8)
+        delay(50);
+        motor(0, 0);
+        delay(20);
+        // error = PID_trail(false, []()
+        //                   { return (IR_RR == 0); }, 80, 0, 0, 180, 0, false, error); //(8)
+        // todo:
+        PID_left(100, -100, 100, 20, 2, true); // 8 ~ 9 的左直角
+        PID_trail(true, []()
+                  { return (IR_RR == 1); }, 30, 0, 0, 130, 0); // 向前衝到 RR 看到黑線 (9)
+        delay(10);
+        PID_right(80, 100, -100, 20, 2, true);  // 9 ~ 10 的右角
+        PID_left(100, -100, 100, 20, 2, true);  // 10 的左直角
+        PID_right(100, 100, -100, 20, 2, true); // 10 ~ 11 的右角
+        error = PID_trail(true, []()
+                          { return (IR_LL == 1); }, 30, 0, 0, 100, 0, false);
+        error = PID_trail(true, []()
+                          { return (false); }, 30, 0, 0, 70, 500, false, error);
+        error = PID_trail(true, []()
+                          { return (IR_L == 0 && IR_M == 0 && IR_R == 0); }, 30, 0, 0, 60, 0, false, error); // 11 + 12 的弧形
+        error = PID_trail(true, []()
+                          { return (false); }, 30, 0, 0, 60, 700, false, error); // 在紅線前轉正
+
+        // ! /////////////////////////////////////開始右避障循跡///////////////////////////////////////
+        distance = 0;
+        PID_trail(false, []()
+                  { return (distance > 0 && distance <= 15); }, 40, 0, 0, 120, 0, true);
+        stop();
+        while (!(IR_LL))
+        {
+            IR_update();
+            motor(110, 10);
+        }
+        while (!(IR_LL == 0))
+        {
+            IR_update();
+            motor(100, 0);
+        }
+        delay(100);
+        while (!(IR_L))
+        {
+            IR_update();
+            motor(68, 170);
+        }
+        // ! /////////////////////////////////////結束右避障循跡///////////////////////////////////////
+        PID_trail(true, []()
+                  { return (false); }, 30, 0, 0, 10, 200);
+        // ! /////////////////////////////////////開始左避障循跡///////////////////////////////////////
+        distance = 0;
+        PID_trail(false, []()
+                  { return (distance > 0 && distance <= 14); }, 40, 0, 0, 100, 0, true);
+        stop();
+        while (!(IR_RR))
+        {
+            IR_update();
+            motor(0, 110);
+        }
+        while (!(IR_RR == 0))
+        {
+            IR_update();
+            motor(0, 100);
+        }
+        delay(100);
+        while (!(IR_R))
+        {
+            IR_update();
+            motor(170, 70);
+        }
+        // ! /////////////////////////////////////結束左避障循跡/////////////////////////////////////
+        PID_left(120, -120, 120, 20, 2, true); // 左轉正到 14 的線上
+        PID_left(100, -100, 100, 30, 0, true); // 14 ~ 15 的左直角
+        PID_left(100, -100, 80, 30, 0, true);  // 15 ~ 16 的左直角
+        PID_trail(true, []()
+                  { return (false); }, 30, 0, 0, 60, 500);
+        PID_trail(true, []()
+                  { return (IR_M == 0 && IR_R == 0 && IR_L == 0); }, 30, 0, 0, 255, 0); // 向前衝到 16 的空白處
+        PID_trail(true, []()
+                  { return (IR_M == 1 or IR_R == 1 or IR_L == 1); }, 30, 0, 0, 255, 0); // 衝到 16 的黑線
+        delay(70);
+        PID_right(100, 100, -100, 30, 0, true); // 16 ~ 17的右直角
+
+        // TODO: trytrysee
+        error = PID_trail(true, []()
+                          { return (IR_RR == 1); }, 70, 100, 0, 150, 0);
+        stop(); // 直走衝到 RR 看到黑線
+        PID_trail(true, []()
+                  { return (IR_R == 1); }, 70, 100, 0, 90, 0, false, error); // 超出 17 的黑線
+        error = PID_trail(true, []()
+                          { return (IR_LL == 1); }, 70, 100, 0, 150, 0);
+        stop(); // 完成 18 的 U 轉彎 + 直走到 LL 看到黑線
+        error = PID_trail(true, []()
+                          { return (IR_M == 1); }, 50, 20, 0, 90, 0, false, error);
+
+        // TODO: trytrysee
+        PID_right(100, 100, -100, 30, 0, true); // 19 ~ 20 的右直角
+        error = PID_trail(true, []()
+                          { return (false); }, 30, 0, 0, 50, 300);
+
+        PID_trail(true, []()
+                  { return (false); }, 30, 0, 0, 250, 0, false, error); // 衝 FINISH
+    }
     // ! ///////////////////////////////////// 電壓7.74~7.93 /////////////////////////////////////
     stop();
+    delay(50);
     lapTime = millis() - startTime; // 新增：計算單圈時間
 }
